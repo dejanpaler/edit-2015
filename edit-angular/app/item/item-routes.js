@@ -1,0 +1,23 @@
+(function () {
+  'use strict';
+
+  angular
+    .module('item')
+    .config(config);
+
+  function config($stateProvider) {
+    $stateProvider
+      .state('items', {
+        url: '/items',
+        templateUrl: 'item/items.tpl.html',
+        controller: 'ItemCtrl',
+        controllerAs: 'vm'
+      })
+      .state('order', {
+        url: '/order/:itemId',
+        templateUrl: 'item/order.tpl.html',
+        controller: 'OrderCtrl',
+        controllerAs: 'vm'
+      });
+    }
+}());

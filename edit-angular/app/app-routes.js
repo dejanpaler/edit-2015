@@ -5,7 +5,7 @@
     .module('editAngular')
     .config(config);
 
-  function config($urlRouterProvider) {
+  function config($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/home');
   }
 }());

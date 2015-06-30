@@ -1,0 +1,11 @@
+<h2>List of items</h2>
+<input type="text" ng-model="searchTerm" placeholder="Search..." />
+<div class="items-container">
+	<div ng-repeat="item in vm.itemList | filter:searchTerm">
+		{{item.title}} <a href="/#/order/{{$index}}">Order item</a><input type="checkbox" ng-click="vm.BasketChange($index)"/>
+	</div>
+</div>
+<h3 ng-click="vm.basket=3">Basket:</h3>
+<div class="basket-container">
+	<span>{{vm.basket}}</span>
+</div>

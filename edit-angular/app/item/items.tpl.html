@@ -1,8 +1,25 @@
-<h2>List of items</h2>
-<input type="text" ng-model="searchTerm" placeholder="Search..." />
-<div class="items-container">
-	<div ng-repeat="item in vm.itemList | filter:searchTerm">
-		{{item.title}} <a href="/#/order/{{$index}}">Order item</a><input type="checkbox" ng-click="vm.BasketChange($index)"/>
+<div class="container">
+	<h2>List of items</h2>
+</div>
+<div class="container">
+	<div class="col-md-4">
+		<input type="text" ng-model="searchTerm" placeholder="Search..." class="form-control"/>
+	</div>
+	<div class="col-md-8"></div>
+</div>
+<div class="container">
+	<div class="row">
+		<div ng-repeat="item in vm.itemList | filter:searchTerm">
+			<div class="col-md-5">
+				<span class="item-title">{{item.title}}</span>
+			</div>
+			<div class="col-md-3">
+				<input type="checkbox" ng-click="vm.BasketChange($index)"/>
+			</div>
+			<div class="col-md-3">
+				<a href="/#/order/{{$index}}">Order item</a>
+			</div>
+		</div>
 	</div>
 </div>
 <h3 ng-click="vm.basket=3">Basket:</h3>

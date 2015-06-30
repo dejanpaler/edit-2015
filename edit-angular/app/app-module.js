@@ -8,7 +8,8 @@
    */
   angular
     .module('editAngular', [
-      'ngRoute',
-      'mgcrea.ngStrap'
+      'ui.router',
+      'mgcrea.ngStrap',
+      'home'
     ]);
 }());

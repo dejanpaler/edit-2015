@@ -10,6 +10,7 @@
     .module('editAngular', [
       'ui.router',
       'mgcrea.ngStrap',
-      'home'
+      'home',
+      'item'
     ]);
 }());

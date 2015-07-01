@@ -12,18 +12,21 @@
     .module('item')
     .controller('ItemCtrl', ItemCtrl);
 
-  function ItemCtrl() {
+  function ItemCtrl($http) {
     var vm = this;
     vm.ctrlName = 'ItemCtrl';
 
-    vm.itemList = [
-      {title: 'Item 1', location: {x: 10, y: 20}},
-      {title: 'Item 2', location: {x: 10, y: 20}},
-      {title: 'Item 3', location: {x: 10, y: 20}},
-      {title: 'Item 4', location: {x: 10, y: 20}},
-      {title: 'Item 5', location: {x: 10, y: 20}},
-      {title: 'Item 6', location: {x: 10, y: 20}}
-    ];
+    vm.itemList = [];
+
+    $http.get('http://localhost:8080/edit-javaee/items/list')
+    .success(function(data) {
+      vm.itemList = data;
+    })
+    .error(function(data) {
+      alert("you suck");
+      console.log(data);
+    })
+
 
     vm.basket = [];
 

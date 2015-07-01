@@ -14,10 +14,10 @@
 				<span class="item-title">{{item.title}}</span>
 			</div>
 			<div class="col-md-3">
-				<input type="checkbox" ng-click="vm.BasketChange($index)"/>
+				<input type="checkbox" ng-click="vm.BasketChange(item.id)"/>
 			</div>
 			<div class="col-md-3">
-				<a href="/#/order/{{$index}}">Order item</a>
+				<a href="/#/order/{{item.id}}">Order item</a>
 			</div>
 		</div>
 	</div>

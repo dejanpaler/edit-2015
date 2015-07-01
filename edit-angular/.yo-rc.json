@@ -4,10 +4,11 @@
     "controllerAs": true,
     "e2eTestFramework": "jasmine",
     "markup": "html",
-    "ngRoute": true,
+    "ngRoute": false,
     "structure": "module-only",
     "style": "css",
     "testFramework": "jasmine",
-    "testScript": "js"
+    "testScript": "js",
+    "lastUsedModule": "home"
   }
 }

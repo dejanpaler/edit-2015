@@ -2,15 +2,13 @@
   'use strict';
 
   /* @ngdoc object
-   * @name editAngular
+   * @name item
    * @description
    *
    */
   angular
-    .module('editAngular', [
+    .module('item', [
       'ui.router',
-      'mgcrea.ngStrap',
-      'home',
-      'item'
+      'ngWebSocket'
     ]);
 }());

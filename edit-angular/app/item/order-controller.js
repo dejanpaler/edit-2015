@@ -12,12 +12,20 @@
     .module('item')
     .controller('OrderCtrl', OrderCtrl);
 
-  function OrderCtrl($stateParams, $webSocket) {
+  function OrderCtrl($http, $stateParams) {
     var vm = this;
     vm.ctrlName = 'OrderCtrl';
 
-    vm.itemId = $stateParams.itemId;
+    var itemId = $stateParams.itemId;
 
+    vm.item = {};
+    $http.get('http://localhost:8080/edit-javaee/items/' + itemId)
+    .success(function(data){
+      vm.item = data;
+    })
+    .error(function(){
+      alert("Napaka");
+    });
     
   }
 }());

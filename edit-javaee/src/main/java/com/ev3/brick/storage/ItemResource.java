@@ -11,23 +11,28 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.mysql.jdbc.util.ResultSetUtil;
-
 @Path("/items")
 public class ItemResource {
+	
+	private String dbUsername = "root";
+	private String dbPassword = "";
+	private String dbName = "edit-dev";
+	private final String sqlConnectionString = "jdbc:mysql://localhost/" + dbName + "?user=" + dbUsername + "&password=" + dbPassword;
+	
 	@GET
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllItems() throws SQLException {
 		//Class.forName("com.mysql.jdbc.Driver");
 		JsonObjectBuilder json = Json.createObjectBuilder();
-		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/edit-dev?user=root&password=");
+		Connection connection = DriverManager.getConnection(sqlConnectionString);
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * FROM items");
 		int i = 0;
@@ -49,7 +54,7 @@ public class ItemResource {
 	public Response getItem(@PathParam("itemId") String id) throws SQLException {
 		int itemId = Integer.parseInt(id);
 		JsonObjectBuilder json = Json.createObjectBuilder();
-		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/edit-dev?user=root&password=");
+		Connection connection = DriverManager.getConnection(sqlConnectionString);
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * FROM items WHERE id = " + itemId);		
 		if(resultSet.next()){
@@ -60,12 +65,5 @@ public class ItemResource {
 		}
 
 		return Response.ok(json.build()).header("Access-Control-Allow-Origin", "*").build();
-	}
-	
-	@POST
-	@Path("/order")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void postOrder() {
-		//TODO: send order to brick
 	}
 }

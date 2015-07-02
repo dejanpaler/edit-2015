@@ -1,6 +1,7 @@
 package com.ev3.item;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Item {
 
+	@Id
 	@NotNull
 	@Size(max=22, min=22)
 	private String id;

@@ -11,18 +11,16 @@
 	<div class="row">
 		<div ng-repeat="item in vm.itemList | filter:searchTerm">
 			<div class="col-md-5">
-				<span class="item-title">{{item.title}}</span>
+				<a href="/#/order/{{item.id}}" class="item-title">{{item.title}}</a>
 			</div>
 			<div class="col-md-3">
-				<input type="checkbox" ng-click="vm.BasketChange(item.id)"/>
-			</div>
-			<div class="col-md-3">
-				<a href="/#/order/{{item.id}}">Order item</a>
+				<input type="checkbox" ng-click="vm.OnAddCart(item.id)"/>
 			</div>
 		</div>
 	</div>
 </div>
 <h3 ng-click="vm.basket=3">Basket:</h3>
+<a href="#" ng-click="vm.ShowCart()">Show cart</a>
 <div class="basket-container">
-	<span>{{vm.basket}}</span>
+	{{vm.Cart}}
 </div>

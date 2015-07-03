@@ -12,30 +12,23 @@
     .module('item')
     .controller('ItemCtrl', ItemCtrl);
 
-  function ItemCtrl($http) {
+  function ItemCtrl($http, Cart, Items) {
     var vm = this;
     vm.ctrlName = 'ItemCtrl';
 
+
     vm.itemList = [];
-
-    $http.get('http://localhost:8080/edit-javaee/items/list')
-    .success(function(data) {
+    Items.GetAllItems().then(function(data){
       vm.itemList = data;
-    })
-    .error(function(data) {
-      alert("you suck");
-      console.log(data);
-    })
+    });
+    vm.Cart = Cart.Items;
 
-
-    vm.basket = [];
-
-    vm.BasketChange = function(id) {
-      var idIndex = vm.basket.indexOf(id);
-      if(idIndex > -1)
-        vm.basket.splice(idIndex, 1);
-      else
-        vm.basket.push(id);
+    vm.OnAddCart = function(id) {
+      if(Cart.IsInCart(id)){
+        Cart.RemoveFromCart(id);
+      } else {
+        Cart.AddToCart(id);
+      }
     }
   }
 }());

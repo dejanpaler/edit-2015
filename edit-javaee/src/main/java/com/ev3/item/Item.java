@@ -10,15 +10,10 @@ import javax.validation.constraints.Size;
 public class Item {
 
 	@Id
-	@NotNull
-	@Size(max=22, min=22)
 	private String id;
 	
-	@NotNull
-	@Size(max=100, min=3)
 	private String title;
 	
-	@NotNull
 	private long created;
 
 	public String getId() {
@@ -43,6 +38,10 @@ public class Item {
 
 	public void setCreated(long created) {
 		this.created = created;
+	}
+	
+	public boolean isValid() {
+		return !id.isEmpty();
 	}
 	
 	public static class Builder {

@@ -19,5 +19,5 @@
         controller: 'OrderCtrl',
         controllerAs: 'vm'
       });
-    }
+  }
 }());

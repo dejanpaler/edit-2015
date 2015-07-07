@@ -32,7 +32,7 @@ public class BrickCommandsEndpoint {
 
     @PostConstruct
     public void addBrickMessageHandler(){
-        brickEndpoint.addMessageHandler(new BrickMessages(this));
+       // brickEndpoint.addMessageHandler(new BrickMessages(this));
     }
 
     @OnOpen

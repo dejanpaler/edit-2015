@@ -14,7 +14,6 @@
 
   function Items($http, $q) {
     var ItemsBase = {};
-    ItemsBase.someValue = 'Items';
 
     ItemsBase.getAllItems = function () {
       var defer = $q.defer();

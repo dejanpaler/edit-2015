@@ -18,6 +18,12 @@
         templateUrl: 'item/order.tpl.html',
         controller: 'OrderCtrl',
         controllerAs: 'vm'
+      })
+      .state('checkout', {
+        url: '/checkout',
+        templateUrl: 'item/checkout.tpl.html',
+        controller: 'OrderCtrl',
+        controllerAs: 'vm'
       });
-    }
+  }
 }());

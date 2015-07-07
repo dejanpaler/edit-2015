@@ -16,19 +16,25 @@
     var vm = this;
     vm.ctrlName = 'ItemCtrl';
 
-
     vm.itemList = [];
-    Items.GetAllItems().then(function(data){
-      vm.itemList = data;
-    });
-    vm.Cart = Cart.Items;
-
-    vm.OnAddCart = function(id) {
-      if(Cart.IsInCart(id)){
-        Cart.RemoveFromCart(id);
+    vm.error = 0;
+    Items.getAllItems().then(function (data) {
+      if (data.error) {
+        vm.error = data.error;
       } else {
-        Cart.AddToCart(id);
+        vm.itemList = data.items;
       }
-    }
+    });
+    vm.cart = Cart.items;
+
+    vm.onAddCart = function (id) {
+      if (Cart.isInCart(id)) {
+        Cart.removeFromCart(id);
+      } else {
+        Cart.addToCart(id);
+      }
+    };
+
+    vm.isInCart = Cart.isInCart;
   }
 }());

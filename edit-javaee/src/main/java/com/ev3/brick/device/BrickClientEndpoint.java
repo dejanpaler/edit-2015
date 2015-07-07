@@ -2,15 +2,18 @@ package com.ev3.brick.device;
 
 import javax.annotation.PostConstruct;
 import javax.websocket.*;
+
 import java.io.IOException;
 import java.net.URI;
+import java.util.Queue;
 
 @ClientEndpoint
 public class BrickClientEndpoint {
 
-    private static final String WS_HOST_EV3 = "ws://10.0.1.1:8081/ev3";
+    private static final String WS_HOST_EV3 = "ws://localhost:8081/ev3";
 
     private Session session;
+    private Queue<String> commandQueue;
 
     @PostConstruct
     public void connectBrickEndpoint(){

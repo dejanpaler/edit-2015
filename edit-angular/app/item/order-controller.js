@@ -12,15 +12,13 @@
     .module('item')
     .controller('OrderCtrl', OrderCtrl);
 
-  function OrderCtrl($stateParams, Items) {
+  function OrderCtrl(Cart, Brick) {
     var vm = this;
     vm.ctrlName = 'OrderCtrl';
 
-    var itemId = $stateParams.itemId;
-
-    Items.GetItem(itemId).then(function(data){
-      vm.item = data;
-    });
-    
+    vm.cart = Cart.items;
+    vm.processOrder = function () {
+      Brick.sendJson(Cart.items);
+    };
   }
 }());

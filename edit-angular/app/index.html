@@ -13,15 +13,14 @@
     <!-- endinject -->
   </head>
   <body>
-
     <div class='navbar navbar-inverse' role='navigation' data-bs-navbar data-bs-collapse data-start-collapsed='true'>
       <div class='container'>
         <div class='navbar-header'>
           <button class='navbar-toggle collapsed' type='button' data-bs-collapse-toggle>
-            <span class='sr-only'>Toggle Navigation</span>
-            <span class='icon-bar'></span>
-            <span class='icon-bar'></span>
-            <span class='icon-bar'></span>
+          <span class='sr-only'>Toggle Navigation</span>
+          <span class='icon-bar'></span>
+          <span class='icon-bar'></span>
+          <span class='icon-bar'></span>
           </button>
           <a class='navbar-brand' href='#/'>EdIT</a>
         </div>
@@ -34,19 +33,21 @@
               <a ui-sref='items'>Items</a>
             </li>
           </ul>
-          <div class="dropdown">
-            <button class="btn btn-success basket-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-shopping-cart"></span></button>
+          <div class="dropdown btn-group navbar-right" ng-controller="CartCtrl as vm">
+            <button class="btn btn-success cart-toggle" data-ui-sref="order"><span class="glyphicon glyphicon-shopping-cart"></span></button>
+            <button type="button" class="cart-count btn-success btn btn-disabled" data-toggle="dropdown">{{vm.cart.length}}</button>
+            <ul class="dropdown-menu" ng-if="vm.cart.length > 0">
+              <li ng-repeat="item in vm.cart"><a href="#">{{item.title}}</a></li>
+              <li><a data-ui-sref="order">Check out</a></li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-
     <div class='container'>
       <div data-ui-view>
-
       </div>
     </div>
-
     <!-- bower:js -->
     <!-- endbower -->
     <!-- inject:js -->

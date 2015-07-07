@@ -1,4 +1,5 @@
 <div class="container">
+	<div ng-if="vm.error" class="alert alert-danger" role="alert"><strong>Error!</strong> {{vm.error}}</div>
 	<h2>List of items</h2>
 </div>
 <div class="container">
@@ -9,12 +10,12 @@
 </div>
 <div class="container">
 	<div class="row">
-		<div ng-repeat="item in vm.itemList | filter:searchTerm">
-			<div class="col-md-5">
+		<div ng-repeat="item in vm.itemList | filter:searchTerm" style="padding: 20px 0;">
+			<div class="col-md-4">
 				<a href="/#/order/{{item.id}}" class="item-title">{{item.title}}</a>
 			</div>
-			<div class="col-md-3">
-				<input type="checkbox" ng-click="vm.OnAddCart(item.id)"/>
+			<div class="col-md-6">
+				<button class="btn btn-default" ng-click="vm.onAddCart(item.id)">{{!vm.isInCart(item.id) ? 'Add to' : 'Remove from'}} cart</button>
 			</div>
 		</div>
 	</div>
@@ -22,5 +23,5 @@
 <h3 ng-click="vm.basket=3">Basket:</h3>
 <a href="#" ng-click="vm.ShowCart()">Show cart</a>
 <div class="basket-container">
-	{{vm.Cart}}
+	{{vm.cart}}
 </div>

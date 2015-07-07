@@ -40,7 +40,7 @@
     function addToCart(id) {
       Items.getItem(id).then(function (data) {
         if (data !== null) {
-          CartBase.items.push(data);
+          CartBase.items.push(data.item);
         }
       });
     }

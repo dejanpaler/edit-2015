@@ -34,5 +34,7 @@
         Cart.addToCart(id);
       }
     };
+
+    vm.isInCart = Cart.isInCart;
   }
 }());

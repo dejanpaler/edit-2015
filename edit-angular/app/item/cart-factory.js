@@ -34,13 +34,14 @@
     }
 
     function isInCart(id) {
+      console.log(id, CartBase.items);
       return idIndex(id) > -1;
     }
 
     function addToCart(id) {
       Items.getItem(id).then(function (data) {
         if (data !== null) {
-          CartBase.items.push(data);
+          CartBase.items.push(data.item);
         }
       });
     }

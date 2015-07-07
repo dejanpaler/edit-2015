@@ -18,7 +18,7 @@
 
     BrickBase.sendJson = function (data) {
       data = angular.toJson(data);
-      console.info("Sending", data);
+      console.info('Sending', data);
       socket.send(data);
     };
 
@@ -31,11 +31,11 @@
 
       socket.onMessage = function (data) {
         console.log(data);
-      }
+      };
 
       socket.onOpen = function (data) {
-        console.log("Conection opened.", data);
-      }
+        console.log('Connection opened', data);
+      };
     }
   }
 }());

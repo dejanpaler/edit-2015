@@ -13,30 +13,42 @@
     .factory('Cart', Cart);
 
   function Cart(Items) {
-    var CartBase = {};
+    var CartBase, i;
+    CartBase = {};
 
-    CartBase.Items = [];
-    var ItemsMap = [];
+    CartBase.items = [];
 
-    CartBase.IsInCart = function(id) {
-      return ItemsMap.indexOf(id) > -1;
-    }
-
-    CartBase.AddToCart = function(id) {
-      Items.GetItem(id).then(function(data) {
-        if(data != null){
-          CartBase.Items.push(data);
-          ItemsMap.push(data.id);
-        }
-      })
-    }
-
-    CartBase.RemoveFromCart = function(id) {
-      delete CartBase.Items[ItemsMap.indexOf(id)];
-    }
-
-
+    CartBase.isInCart = isInCart;
+    CartBase.addToCart = addToCart;
+    CartBase.removeFromCart = removeFromCart;
 
     return CartBase;
+
+    function idIndex(id) {
+      for (i = 0; i < CartBase.items.length; i++) {
+        if (CartBase.items[i].id === id) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    function isInCart(id) {
+      return idIndex(id) > -1;
+    }
+
+    function addToCart(id) {
+      Items.getItem(id).then(function (data) {
+        if (data !== null) {
+          CartBase.items.push(data);
+        }
+      });
+    }
+
+    function removeFromCart(id) {
+      if (isInCart(id)) {
+        CartBase.items.splice(idIndex(id), 1);
+      }
+    }
   }
 }());

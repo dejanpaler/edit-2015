@@ -34,7 +34,6 @@
     }
 
     function isInCart(id) {
-      console.log(id, CartBase.items);
       return idIndex(id) > -1;
     }
 

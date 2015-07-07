@@ -21,7 +21,10 @@
       $http.get('http://localhost:8080/edit-javaee/items', {
         cache: 'true'
       }).success(function (data) {
-        defer.resolve(data);
+        defer.resolve({items: data});
+      })
+      .error(function () {
+        defer.resolve({error: 'Couldn\'t connect to the server.'});
       });
       return defer.promise;
     };
@@ -31,7 +34,10 @@
       $http.get('http://localhost:8080/edit-javaee/items/' + id, {
         cache: true
       }).success(function (data) {
-        defer.resolve(data);
+        defer.resolve({item: data});
+      })
+      .error(function () {
+        defer.respolve({error: 'Couldn\'t connect to the server.'});
       });
       return defer.promise;
     };

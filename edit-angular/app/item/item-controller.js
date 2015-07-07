@@ -17,10 +17,15 @@
     vm.ctrlName = 'ItemCtrl';
 
     vm.itemList = [];
+    vm.error = 0;
     Items.getAllItems().then(function (data) {
-      vm.itemList = data;
+      if (data.error) {
+        vm.error = data.error;
+      } else {
+        vm.itemList = data.items;
+      }
     });
-    vm.Cart = Cart.items;
+    vm.cart = Cart.items;
 
     vm.onAddCart = function (id) {
       if (Cart.isInCart(id)) {

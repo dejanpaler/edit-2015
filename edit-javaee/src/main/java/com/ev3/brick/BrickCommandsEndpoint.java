@@ -1,23 +1,23 @@
 package com.ev3.brick;
 
 import com.ev3.brick.device.BrickClientEndpoint;
-import com.ev3.item.Item;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Singleton
@@ -32,8 +32,8 @@ public class BrickCommandsEndpoint {
     BrickClientEndpoint brickEndpoint;
 
     @PostConstruct
-    public void addBrickMessageHandler(){
-       // brickEndpoint.addMessageHandler(new BrickMessages(this));
+    public void addBrickMessageHandler() {
+        // brickEndpoint.addMessageHandler(new BrickMessages(this));
     }
 
     @OnOpen
@@ -48,16 +48,30 @@ public class BrickCommandsEndpoint {
     }
 
     @OnMessage
-    public void execute(String json) throws IOException {
-    	Gson gson = new GsonBuilder().create();
-    	Item[] listOfItems = gson.fromJson(json, Item[].class);
-    	for (Item item : listOfItems) {
-    		String jsonCommand = gson.toJson(new CommandWrapper("MoveToLocation", "X,Y"));
-			brickEndpoint.sendCommand(jsonCommand);
-		}
+    public void execute(String json){
+
+        JsonArray jsonValues = Json.createReader(new StringReader(json)).readArray();
+
+        List<JsonObject> jsonObjects = jsonValues.getValuesAs(JsonObject.class);
+        jsonObjects.stream().forEach(jsonObject -> {
+            jsonObject.getString("id");
+
+            CommandWrapper command  = new CommandWrapper("MoveToLocation", "X,Y");
+
+            JsonObject jsonCommand = Json.createObjectBuilder()
+                    .add("command", command.getCommand())
+                    .add("data", command.getData())
+                    .build();
+
+            try {
+                brickEndpoint.sendCommand(jsonCommand.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(String message) {
         webSessions.stream().forEach(session -> {
             try {
                 session.getBasicRemote().sendText(message);
@@ -66,10 +80,4 @@ public class BrickCommandsEndpoint {
             }
         });
     }
-
-    //@Schedule(second = "*/15", minute = "*", hour = "*")
-    public void sendAlive() throws IOException {
-        sendMessage("[ev3.javaee] Server is alive");
-    }
-
 }

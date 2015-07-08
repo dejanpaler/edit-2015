@@ -9,77 +9,77 @@ import lejos.hardware.Button;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 
 import java.io.StringReader;
 
 public class BrickCommands extends AbstractReceiveListener {
 
-	private WebSocketChannel channel;
+    private WebSocketChannel channel;
+    
 
-	@Override
-	protected void onFullTextMessage(WebSocketChannel channel,
-			BufferedTextMessage message) {
-		this.channel = channel;
-		try{
-			final JsonObject jsonCommand = Json.createReader(
-					new StringReader(message.getData())).readObject();
-			System.out.println("Parsed: " + jsonCommand.toString());
-			final String command = jsonCommand.getString("command");
-			WebSockets.sendText("[ev3.brick] Received action " + command, channel,
-					null);
-	
-			if (command.isEmpty())
-				Log.info("No command given.");
-			else if (command.equals("MoveToLocation")) {
-				double x = Double.parseDouble(jsonCommand.getString("locationX"));
-				double y = Double.parseDouble(jsonCommand.getString("locationY"));
-				MoveToLocation(x, y);
-			} else if (command.equals("MoveHome")) {
-				MoveHome();
-			} else {
-				Log.info("Command " + command + " doesn't exist.");
-			}
-			if (command.equals("stop")) {
-				Log.info("Press escape to exit.");
-				if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
-					System.exit(0);
-				}
-			}
-		} catch (JsonException je)
-		{
-			System.out.print("Couldn't parse JSON.");
-		}
-	}
+    @Override
+    protected void onFullTextMessage(WebSocketChannel channel,
+            BufferedTextMessage message) {
+        String json = message.getData();
+        Log.info("Trying to parse JSON:" + json);
+        this.channel = channel;
+        try {
+            final JsonObject jsonCommand = Json.createReader(
+                    new StringReader(json)).readObject();
+            System.out.println("Parsed: " + jsonCommand.toString());
+            final String command = jsonCommand.getString("command");
+            WebSockets.sendText("[ev3.brick] Received command " + command,
+                    channel, null);
+            if (command.isEmpty())
+                Log.info("No command given.");
+            else if (command.equals("MoveToLocation")) {
+                MoveToLocation();
+            } else if (command.equals("MoveHome")) {
+                MoveHome();
+            } else if (command.equals("PickUpItem")) {
+                PickupItem();
+            } else if (command.equals("DropItem")) {
+                DropItem();
+            } else {
+                Log.info("Command " + command + " doesn't exist.");
+            }
+            if (command.equals("Stop")) {
+                Log.info("Press escape to exit.");
+                if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+                    System.exit(0);
+                }
+            }
+        } catch (JsonException je) {
+            System.out.print("Couldn't parse JSON.");
+            System.out.print(je.getMessage());
+        }
+    }
 
-	private void MoveToLocation(double x, double y) {
-		// Send robot to X Y
-		Log.info("Sending robot to location");
-		// TODO
+    private void MoveToLocation() {
+        // Send robot to X Y
+        Log.info("Sending robot to location");
+        Button.LEDPattern(0);
+        Log.info("Robot at location.");
+    }
 
-		Log.info("Robot at location.");
-	}
+    private void MoveHome() {
+        Log.info("Sending robot home");
+        // TODO
+        Button.LEDPattern(1);
+        Log.info("I'm home.");
+    }
 
-	private void MoveHome() {
-		Log.info("Sending robot home");
-		// TODO
+    private void PickupItem() {
+        Log.info("Picking up item");
+        // TODO
+        Button.LEDPattern(2);
+        Log.info("Item picked up");
+    }
 
-		Log.info("I'm home.");
-	}
-
-	private void PickupItem() {
-		Log.info("Picking up item");
-		// TODO
-
-		Log.info("Item picked up");
-	}
-
-	private void DropItem() {
-		Log.info("Dropping..:");
-		// TODO
-
-		Log.info("Item dropped.");
-	}
+    private void DropItem() {
+        Log.info("Dropping..:");
+        // TODO
+        Button.LEDPattern(3);
+        Log.info("Item dropped.");
+    }
 }

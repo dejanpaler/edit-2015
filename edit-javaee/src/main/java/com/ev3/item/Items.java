@@ -13,7 +13,7 @@ import javax.persistence.Query;
 @Stateless
 public class Items {
 
-	@PersistenceContext(unitName = "Items")
+	@PersistenceContext
 	private EntityManager em;
 
 	public Item createItem(String title) {

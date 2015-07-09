@@ -1,35 +1,31 @@
 package com.ev3;
 
+import java.io.StringReader;
+
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+
 import io.undertow.websockets.core.AbstractReceiveListener;
 import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import lejos.hardware.Button;
 
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-
-import java.io.StringReader;
-
 public class BrickCommands extends AbstractReceiveListener {
 
     private WebSocketChannel channel;
-    
 
     @Override
-    protected void onFullTextMessage(WebSocketChannel channel,
-            BufferedTextMessage message) {
+    protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
         String json = message.getData();
         Log.info("Trying to parse JSON:" + json);
         this.channel = channel;
         try {
-            final JsonObject jsonCommand = Json.createReader(
-                    new StringReader(json)).readObject();
+            final JsonObject jsonCommand = Json.createReader(new StringReader(json)).readObject();
             System.out.println("Parsed: " + jsonCommand.toString());
             final String command = jsonCommand.getString("command");
-            WebSockets.sendText("[ev3.brick] Received command " + command,
-                    channel, null);
+            WebSockets.sendText("[ev3.brick] Received command " + command, channel, null);
             if (command.isEmpty())
                 Log.info("No command given.");
             else if (command.equals("MoveToLocation")) {

@@ -1,7 +1,5 @@
 package com.ev3;
 
-import io.undertow.Undertow;
-
 import static io.undertow.Handlers.path;
 import static io.undertow.Handlers.websocket;
 
@@ -9,6 +7,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+
+import io.undertow.Undertow;
 
 public class BrickServer {
 
@@ -18,7 +18,7 @@ public class BrickServer {
 
     private static void startWebSocketServer() {
         WebSocketCallback callback = new WebSocketCallback();
-        
+
         String ip = "0.0.0.0";
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -29,7 +29,7 @@ public class BrickServer {
                     continue;
 
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while(addresses.hasMoreElements()) {
+                while (addresses.hasMoreElements()) {
                     InetAddress addr = addresses.nextElement();
                     ip = addr.getHostAddress();
                     Log.info(iface.getDisplayName() + " " + ip);
@@ -41,11 +41,8 @@ public class BrickServer {
 
         Log.info("Starting server...");
         final String host = "0.0.0.0";
-        Undertow server = Undertow
-                .builder()
-                .addHttpListener(8081, host)
-                .setHandler(path().addPrefixPath("/ev3", websocket(callback)))
-                .build();
+        Undertow server = Undertow.builder().addHttpListener(8081, host)
+                .setHandler(path().addPrefixPath("/ev3", websocket(callback))).build();
         server.start();
         Log.info("Server started.");
         Log.info("Listening on " + ip + ":8081/ev3");

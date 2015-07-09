@@ -28,8 +28,8 @@ public class CorsHeaders implements ContainerResponseFilter {
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
 
     @Override
-    public void filter(final ContainerRequestContext requestContext,
-                       final ContainerResponseContext responseContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext)
+            throws IOException {
 
         final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
         headers.add(ACCESS_CONTROL_ALLOW_ORIGIN_KEY, ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);

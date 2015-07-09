@@ -10,13 +10,12 @@ import javax.inject.Inject;
 @Startup
 public class StartupEventNotifier {
 
-
     @Inject
     Event<StartupEvent> event;
 
     @PostConstruct
     public void init() {
-        event.fire(new StartupEvent(){
+        event.fire(new StartupEvent() {
         });
     }
 }

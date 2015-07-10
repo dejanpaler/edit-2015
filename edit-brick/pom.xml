@@ -42,7 +42,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>ev3-brick</finalName>
+              <finalName>edit-brick</finalName>
               <artifactSet>
                 <excludes>
                   <exclude>lejos:*</exclude>

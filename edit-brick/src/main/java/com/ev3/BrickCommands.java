@@ -4,8 +4,8 @@ import io.undertow.websockets.core.AbstractReceiveListener;
 import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
+import lejos.hardware.Button;
 
-import java.awt.Button;
 import java.io.StringReader;
 
 import javax.json.Json;

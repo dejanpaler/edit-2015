@@ -1,9 +1,8 @@
 package com.ev3;
 
-import io.undertow.Undertow;
-
 import static io.undertow.Handlers.path;
 import static io.undertow.Handlers.websocket;
+import io.undertow.Undertow;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -18,10 +17,11 @@ public class BrickServer {
 
     private static void startWebSocketServer() {
         WebSocketCallback callback = new WebSocketCallback();
-        
+
         String ip = "0.0.0.0";
         try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            Enumeration<NetworkInterface> interfaces = NetworkInterface
+                    .getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface iface = interfaces.nextElement();
                 // filters out 127.0.0.1 and inactive interfaces
@@ -29,7 +29,7 @@ public class BrickServer {
                     continue;
 
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while(addresses.hasMoreElements()) {
+                while (addresses.hasMoreElements()) {
                     InetAddress addr = addresses.nextElement();
                     ip = addr.getHostAddress();
                     Log.info(iface.getDisplayName() + " " + ip);
@@ -41,9 +41,7 @@ public class BrickServer {
 
         Log.info("Starting server...");
         final String host = "0.0.0.0";
-        Undertow server = Undertow
-                .builder()
-                .addHttpListener(8081, host)
+        Undertow server = Undertow.builder().addHttpListener(8081, host)
                 .setHandler(path().addPrefixPath("/ev3", websocket(callback)))
                 .build();
         server.start();

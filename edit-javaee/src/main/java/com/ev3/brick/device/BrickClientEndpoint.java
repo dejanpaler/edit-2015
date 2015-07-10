@@ -1,11 +1,17 @@
 package com.ev3.brick.device;
 
-import javax.annotation.PostConstruct;
-import javax.websocket.*;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Queue;
+
+import javax.annotation.PostConstruct;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.MessageHandler;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
 
 @ClientEndpoint
 public class BrickClientEndpoint {
@@ -16,12 +22,12 @@ public class BrickClientEndpoint {
     private Queue<String> commandQueue;
 
     @PostConstruct
-    public void connectBrickEndpoint(){
-        final WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+    public void connectBrickEndpoint() {
+        final WebSocketContainer webSocketContainer = ContainerProvider
+                .getWebSocketContainer();
 
         try {
-            webSocketContainer
-                    .connectToServer(this, URI.create(WS_HOST_EV3));
+            webSocketContainer.connectToServer(this, URI.create(WS_HOST_EV3));
         } catch (DeploymentException | IOException e) {
             e.printStackTrace();
         }
@@ -32,12 +38,11 @@ public class BrickClientEndpoint {
         this.session = session;
     }
 
-    public void addMessageHandler(MessageHandler.Whole<String> handler){
+    public void addMessageHandler(MessageHandler.Whole<String> handler) {
         this.session.addMessageHandler(handler);
     }
 
     public void sendCommand(String command) throws IOException {
-        this.session.getBasicRemote()
-                    .sendText(command);
+        this.session.getBasicRemote().sendText(command);
     }
 }

@@ -4,18 +4,17 @@ import io.undertow.websockets.core.AbstractReceiveListener;
 import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
-import lejos.hardware.Button;
+
+import java.awt.Button;
+import java.io.StringReader;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 
-import java.io.StringReader;
-
 public class BrickCommands extends AbstractReceiveListener {
 
     private WebSocketChannel channel;
-    
 
     @Override
     protected void onFullTextMessage(WebSocketChannel channel,

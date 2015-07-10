@@ -13,29 +13,29 @@ import javax.ws.rs.core.Response;
 @Path("/bricks")
 public class BrickResource {
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getBricks(){
-		
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-		
-		objectBuilder.add("name", "joze");
-		objectBuilder.add("age", "222");
-		
-		return Response.ok(objectBuilder.build()).build();		
-	}
-	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@PathParam("brickId")
-	public Response createBricks(String brickId){
-		
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-		
-		objectBuilder.add("name", "joze");
-		objectBuilder.add("age", "222");
-		
-		return Response.ok(objectBuilder.build()).build();		
-	}
-	
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBricks() {
+
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
+        objectBuilder.add("name", "joze");
+        objectBuilder.add("age", "222");
+
+        return Response.ok(objectBuilder.build()).build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @PathParam("brickId")
+    public Response createBricks(String brickId) {
+
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
+        objectBuilder.add("name", "joze");
+        objectBuilder.add("age", "222");
+
+        return Response.ok(objectBuilder.build()).build();
+    }
+
 }

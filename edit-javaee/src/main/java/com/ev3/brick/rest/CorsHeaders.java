@@ -22,20 +22,26 @@ public class CorsHeaders implements ContainerResponseFilter {
     public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = "GET, POST, PUT, DELETE, OPTIONS, HEAD";
 
     public static final String ACCESS_CONTROL_MAX_AGE_KEY = "Access-Control-Max-Age";
-    public static final String ACCESS_CONTROL_MAX_AGE_VALUE = String.valueOf(TimeUnit.DAYS.toSeconds(3));
+    public static final String ACCESS_CONTROL_MAX_AGE_VALUE = String
+            .valueOf(TimeUnit.DAYS.toSeconds(3));
 
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN_KEY = "Access-Control-Allow-Origin";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
 
     @Override
     public void filter(final ContainerRequestContext requestContext,
-                       final ContainerResponseContext responseContext) throws IOException {
+            final ContainerResponseContext responseContext) throws IOException {
 
-        final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
-        headers.add(ACCESS_CONTROL_ALLOW_ORIGIN_KEY, ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-        headers.add(ACCESS_CONTROL_ALLOW_HEADERS_KEY, ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
-        headers.add(ACCESS_CONTROL_ALLOW_CREDENTIALS_KEY, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-        headers.add(ACCESS_CONTROL_ALLOW_METHODS_KEY, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+        final MultivaluedMap<String, Object> headers = responseContext
+                .getHeaders();
+        headers.add(ACCESS_CONTROL_ALLOW_ORIGIN_KEY,
+                ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+        headers.add(ACCESS_CONTROL_ALLOW_HEADERS_KEY,
+                ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
+        headers.add(ACCESS_CONTROL_ALLOW_CREDENTIALS_KEY,
+                ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
+        headers.add(ACCESS_CONTROL_ALLOW_METHODS_KEY,
+                ACCESS_CONTROL_ALLOW_METHODS_VALUE);
         headers.add(ACCESS_CONTROL_MAX_AGE_KEY, ACCESS_CONTROL_MAX_AGE_VALUE);
     }
 }

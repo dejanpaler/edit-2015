@@ -6,9 +6,9 @@ import javax.ws.rs.core.Response;
 
 @Path("/")
 public class PageService {
-	@GET
-	public Response indexPage() {
-		return Response.status(Response.Status.NOT_FOUND).build();
-	}
+    @GET
+    public Response indexPage() {
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
 
 }

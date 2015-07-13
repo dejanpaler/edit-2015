@@ -55,7 +55,7 @@ public class BrickCommands extends AbstractReceiveListener {
     }
 
     private void MoveToLocation() {
-        // Send robot to X Y
+        // Send robot to X Ygdfgdfg
         Log.info("Sending robot to location");
         Button.LEDPattern(0);
         Log.info("Robot at location.");

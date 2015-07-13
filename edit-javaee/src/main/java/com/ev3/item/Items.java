@@ -32,4 +32,9 @@ public class Items {
         Query q = em.createQuery("SELECT i FROM Item i");
         return q.getResultList();
     }
+
+    public void sayHullo(){
+        System.out.println("Hullo!");
+    }
+
 }

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.ev3.brick.BrickCommandsEndpoint;
 import com.ev3.startup.StartupEvent;
 
 @Path("/items")
@@ -20,6 +22,9 @@ public class ItemService {
 
     @Inject
     Items items;
+
+    @Inject
+    BrickCommandsEndpoint BC;
 
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
         int i = 20;
@@ -54,5 +59,11 @@ public class ItemService {
         Item item = items.findItem(itemId);
 
         return Response.ok(item).build();
+    }
+    @POST
+    @Path("/go")
+    public Response go(@FormParam("go") String go) {
+        BC.sendMessage(go);
+        return Response.ok("action=" + go).build();
     }
 }

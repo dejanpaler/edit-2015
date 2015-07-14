@@ -44,6 +44,7 @@ public class ItemService {
 
         return Response.ok(list).build();
     }
+    nek error.
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

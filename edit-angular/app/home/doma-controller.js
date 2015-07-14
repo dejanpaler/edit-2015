@@ -15,7 +15,7 @@
   function DomaCtrl($scope, $http) {
     $scope.name = "ROBOT";
     $scope.sen = function(){
-      $http.post("http://10.80.49.2:8080/go", "2,0").
+      $http.post("http://10.80.49.2:8080/edit-javaee/items/go", {go:'test'}).
         success(function() {
           $scope.name = "USPEH";
         }).

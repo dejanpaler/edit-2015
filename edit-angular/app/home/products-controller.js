@@ -24,6 +24,21 @@
       name: 'Green',
       size: 2,
       description: 'Very nice!'
+    },
+    {
+      name: 'Black',
+      size: 5,
+      description: 'Its round and black!'
+    },
+    {
+      name: 'Red',
+      size: 2,
+      description: 'Very nice!'
+    },
+    {
+      name: 'Green',
+      size: 4,
+      description: 'Very nice!'
     }
   ];
 
@@ -35,5 +50,5 @@
       });
     });
   };
-  
+
 }());

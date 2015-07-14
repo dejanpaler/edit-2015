@@ -33,8 +33,6 @@ public class Items {
         return q.getResultList();
     }
 
-    public void sayHullo(){
-        System.out.println("Hullo!");
-    }
+
 
 }

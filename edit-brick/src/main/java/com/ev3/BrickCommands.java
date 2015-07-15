@@ -4,7 +4,9 @@ import io.undertow.websockets.core.AbstractReceiveListener;
 import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
+
 import lejos.hardware.Button;
+import lejos.utility.Delay;
 
 import java.io.StringReader;
 
@@ -17,14 +19,22 @@ public class BrickCommands extends AbstractReceiveListener {
     private WebSocketChannel channel;
 
     @Override
-    protected void onFullTextMessage(WebSocketChannel channel,
-            BufferedTextMessage message) {
-        String json = message.getData();
-        Log.info("Trying to parse JSON:" + json);
+    protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
+
+    	Log.info(message.toString());
         this.channel = channel;
+    	int x = ParseX(message.toString());
+    	int y = ParseY(message.toString());
+    	MoveToLocation(x, y);
+    	
+    	
+    	//String json = message.getData();
+        //Log.info("Trying to parse JSON:" + json);
+       
+
+        /*
         try {
-            final JsonObject jsonCommand = Json.createReader(
-                    new StringReader(json)).readObject();
+        	final JsonObject jsonCommand = Json.createReader(new StringReader(json)).readObject();
             System.out.println("Parsed: " + jsonCommand.toString());
             final String command = jsonCommand.getString("command");
             WebSockets.sendText("[ev3.brick] Received command " + command,
@@ -52,13 +62,41 @@ public class BrickCommands extends AbstractReceiveListener {
             System.out.print("Couldn't parse JSON.");
             System.out.print(je.getMessage());
         }
+        */
     }
-
-    private void MoveToLocation() {
+    
+    private Integer ParseX(String message) {
+    	int i = message.indexOf(";");
+    	int x = Integer.parseInt(message.substring(0, i));
+        return x;
+    }
+    
+    private Integer ParseY(String message) {
+    	int i = message.indexOf(";");
+    	int y = Integer.parseInt(message.substring(i));
+        return y;
+    }
+    
+    private void MoveToLocation(int x, int y) {
         // Send robot to X Y
+    	Delay.msDelay(1000);
         Log.info("Sending robot to location");
+        //WebSockets.sendText("[ev3.brick] > Sending robot to location." , channel, null);
+        
+        /*
+        for(int i=0; i<y; i++){
+        	MoveToNextIntersection();
+        }
+        TurnRight();
+        for(int i=0; i<x; i++){
+        	MoveToNextIntersection();
+        }
+        */
+        
         Button.LEDPattern(0);
+    	Delay.msDelay(1000);
         Log.info("Robot at location.");
+        //WebSockets.sendText("[ev3.brick] > Robot at location." , channel, null);
     }
 
     private void MoveHome() {
@@ -67,7 +105,7 @@ public class BrickCommands extends AbstractReceiveListener {
         Button.LEDPattern(1);
         Log.info("I'm home.");
     }
-
+    
     private void PickupItem() {
         Log.info("Picking up item");
         // TODO
@@ -80,5 +118,22 @@ public class BrickCommands extends AbstractReceiveListener {
         // TODO
         Button.LEDPattern(3);
         Log.info("Item dropped.");
+    }
+    
+    private void MoveToNextIntersection(){
+    	//move until next yellow dot
+    }
+    
+    private void Turn(String direction){
+    	if(direction.equals("right")){
+    		//turn right
+    	}
+    	else if (direction.equals("left")){
+    		//turn left
+    	}
+    	else {
+    		//turn around
+    	}
+    	
     }
 }

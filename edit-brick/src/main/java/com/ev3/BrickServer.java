@@ -9,9 +9,13 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import lejos.hardware.Button;
+import lejos.hardware.motor.*;
+
 public class BrickServer {
 
     public static void main(String[] args) {
+        HelloWorld();
         startWebSocketServer();
     }
 
@@ -47,5 +51,20 @@ public class BrickServer {
         server.start();
         Log.info("Server started.");
         Log.info("Listening on " + ip + ":8081/ev3");
+        
+        Thread thread = new Thread(){
+            public void run(){
+            	System.out.print("Thread started");
+            	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+            		System.exit(0);
+            	}
+            }
+        };
+        thread.start();    
+    }
+
+    
+    private static void HelloWorld(){
+    	System.out.print("Hello World!");
     }
 }

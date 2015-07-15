@@ -7,6 +7,7 @@ import io.undertow.Undertow;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import lejos.hardware.Button;
@@ -18,15 +19,38 @@ import lejos.robotics.SampleProvider;
 
 public class BrickServer {
 
+	 private static Port colorSensorPort = SensorPort.S2;
+	    private static EV3ColorSensor colorSensor;
+	    private static SampleProvider sampleProvider;
+	    private static int sampleSize;
+	
     public static void main(String[] args) {
         HelloWorld();
-        startWebSocketServer();
+        //startWebSocketServer();
+        find_path(1,1);
         //MotorForward();
     }
 
-    private void find_path(int x, int y)
+    private static float[] getSample() {
+        // Initializes the array for holding samples
+        float[] sample = new float[sampleSize];
+
+        // Gets the sample an returns it
+        sampleProvider.fetchSample(sample, 0);
+        return sample;
+    }
+    
+    private static void find_path(int x, int y)
     {
-    	//EV3ColorSensor colorSensor = new EV3ColorSensor(colorSensorPort);
+    	colorSensor = new EV3ColorSensor(colorSensorPort);
+        sampleProvider = colorSensor.getRedMode();
+        sampleSize = sampleProvider.sampleSize();
+
+        // Takes some samples and prints them
+        for (int i = 0; i < 4; i++) {
+            float[] sample = getSample();
+            System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
+        }
     }
     
     

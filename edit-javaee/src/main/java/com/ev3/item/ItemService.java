@@ -27,11 +27,17 @@ public class ItemService {
     BrickClientEndpoint BC;
 
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
-        int i = 20;
+        /*int i = 20;
         for (int j = 1; j <= i; j++) {
             String title = "Item #" + j;
             items.createItem(title);
-        }
+        }*/
+    	
+    	//items.createItem(title)
+    	
+    	items.createItem("prvi", 0, 0, direction.left);
+    	items.createItem("drugi", 4, -2, direction.left);
+    	items.createItem("tretji", 3, 7, direction.right);
     }
 
     @GET
@@ -49,7 +55,7 @@ public class ItemService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response createItem(Item item) {
-        Item newItem = items.createItem(item.getTitle());
+        Item newItem = items.createItem(item.getTitle(), item.getCoorX(), item.getCoorY(), item.getDirection());
         return Response.status(Response.Status.CREATED).entity(newItem).build();
     }
 

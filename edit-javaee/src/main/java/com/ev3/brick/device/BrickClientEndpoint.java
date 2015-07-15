@@ -43,6 +43,9 @@ public class BrickClientEndpoint {
     }
 
     public void sendCommand(String command) throws IOException {
-        this.session.getBasicRemote().sendText(command);
+
+            this.session.getBasicRemote().sendText(command);
+
+
     }
 }

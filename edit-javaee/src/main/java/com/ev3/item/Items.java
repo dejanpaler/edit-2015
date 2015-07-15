@@ -14,10 +14,10 @@ public class Items {
     @PersistenceContext
     private EntityManager em;
 
-    public Item createItem(String title) {
+    public Item createItem(String title, int coorX, int coorY, direction d) {
         // EntityManager em = emf.createEntityManager();
         Item newItem = new Item.Builder().id(ItemId.generate()).title(title)
-                .created(Instant.now().toEpochMilli()).build();
+                .created(Instant.now().toEpochMilli()).coorX(coorX).coorY(coorY).dir(d).build();
         em.persist(newItem);
         return newItem;
     }

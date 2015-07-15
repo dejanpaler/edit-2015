@@ -19,17 +19,12 @@ public class BrickCommands extends AbstractReceiveListener {
     private WebSocketChannel channel;
 
     @Override
-	protected void onError(WebSocketChannel err, Throwable er)
-    {
-    	Log.info("PRISLO JE DO NAPAKE!");
-    }
-    
-    @Override
     protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
+
+    	Log.info(message.toString());
         this.channel = channel;
     	int x = ParseX(message.toString());
     	int y = ParseY(message.toString());
-    	Log.info(message.toString());
     	MoveToLocation(x, y);
     	
     	
@@ -110,7 +105,7 @@ public class BrickCommands extends AbstractReceiveListener {
         Button.LEDPattern(1);
         Log.info("I'm home.");
     }
-
+    
     private void PickupItem() {
         Log.info("Picking up item");
         // TODO
@@ -124,7 +119,21 @@ public class BrickCommands extends AbstractReceiveListener {
         Button.LEDPattern(3);
         Log.info("Item dropped.");
     }
-    public void HelloWorld(){
-    	System.out.print("Hello World!");
+    
+    private void MoveToNextIntersection(){
+    	//move until next yellow dot
+    }
+    
+    private void Turn(String direction){
+    	if(direction.equals("right")){
+    		//turn right
+    	}
+    	else if (direction.equals("left")){
+    		//turn left
+    	}
+    	else {
+    		//turn around
+    	}
+    	
     }
 }

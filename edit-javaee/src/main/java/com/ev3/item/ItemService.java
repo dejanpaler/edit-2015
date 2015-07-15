@@ -32,6 +32,7 @@ public class ItemService {
             String title = "Item #" + j;
             items.createItem(title);
         }*/
+<<<<<<< HEAD
         
         //items.createItem(title)
         
@@ -43,6 +44,19 @@ public class ItemService {
         boolean b = items.CheckFreeLocation(0, 0, direction.down);
         
         System.out.println("REZ: " + a + " " + b);
+=======
+    	
+    	//items.createItem(title)
+    	
+    	items.createItem("prvi", 0, 0, direction.up);
+    	items.createItem("drugi", 4, -2, direction.up);
+    	items.createItem("tretji", 3, 7, direction.down);
+    	
+    	boolean a = items.CheckFreeLocation(0, 0, direction.up);
+    	boolean b = items.CheckFreeLocation(0, 0, direction.down);
+    	
+    	System.out.println("REZ: " + a + " " + b);
+>>>>>>> #41 added functionality for checking locations in storage
     }
 
     @GET
@@ -88,6 +102,7 @@ public class ItemService {
     @Path("/create")
     public Response create(String s)
     {
+<<<<<<< HEAD
         
         
         //Item newItem = items.createItem(s, coorX, coorY, d);
@@ -95,3 +110,12 @@ public class ItemService {
         return Response.ok().build();
     }
 }
+=======
+    	
+    	
+    	//Item newItem = items.createItem(s, coorX, coorY, d);
+    	
+        return Response.ok().build();
+    }
+}
+>>>>>>> #41 added functionality for checking locations in storage

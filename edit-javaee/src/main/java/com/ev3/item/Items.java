@@ -11,6 +11,7 @@ import javax.persistence.Query;
 @Stateless
 public class Items {
 
+<<<<<<< HEAD
     private int rows;
     private int cols;
 
@@ -35,6 +36,32 @@ public class Items {
         Collection<Item> items = findAllItems();
     }
     
+=======
+	private int rows;
+	private int cols;
+
+	public void setSize(int r, int c)
+	{
+		this.rows = r;
+		this.cols = c;
+	}
+	
+	public int getRows()
+	{
+		return rows;
+	}
+	
+	public int getCols()
+	{
+		return cols;
+	}
+	
+	public void findFirstEmptySpace()
+	{
+		Collection<Item> items = findAllItems();
+	}
+	
+>>>>>>> #41 added functionality for checking locations in storage
     @PersistenceContext
     private EntityManager em;
 
@@ -59,6 +86,7 @@ public class Items {
     
     public boolean CheckFreeLocation(int row, int col, direction dir)
     {
+<<<<<<< HEAD
         String r = Integer.toString(row);
         String c = Integer.toString(col);
         String d = Integer.toString(dir.ordinal());
@@ -68,3 +96,14 @@ public class Items {
         return !q.getResultList().isEmpty();
     }
 }
+=======
+    	String r = Integer.toString(row);
+    	String c = Integer.toString(col);
+    	String d = Integer.toString(dir.ordinal());
+    	
+    	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");    	
+    	
+    	return !q.getResultList().isEmpty();
+    }
+}
+>>>>>>> #41 added functionality for checking locations in storage

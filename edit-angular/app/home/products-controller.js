@@ -11,45 +11,59 @@
 
   var prod = [
     {
-      name: 'Black',
+      name: 'Black Doge',
       size: 3,
-      description: 'Very nice!',  // yoo
-      price: 110.50,
+      description: 'Very black. Much rare. Wow!',  // Dogescription
+      price: 300,
       images: [
         "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
-        "images/green_doge_01"
       ]
     },
     {
-      name: 'Red',
+      name: 'Red Item Name',
       size: 1,
-      description: 'Very nice!'
+      description: 'Lorem ipsum here!',
+      price: 100,
+      images: [
+        "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
+      ]
     },
     {
-      name: 'Green',
+      name: 'Green Doge',
       size: 2,
       description: 'Such green. Much doge. WOW!',
-      price: 1.75,
+      price: 200,
       images: [
-        "../images/black_ball_01.jpg",
-        "https://i.imgur.com/nAeeF8W.jpg",
-        "../images/black_ball_01.jpg"
+        "../images/green_doge_01.jpg"
       ]
     },
     {
-      name: 'Black',
+      name: 'Black Item Name',
       size: 5,
-      description: 'Its round and black! Very nice. How much?'
-    },
+      description: 'Lorem ipsum here!',
+      price: 300,
+      images: [
+        "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
+      ]
+     },
     {
-      name: 'Red',
+      name: 'Red Item Name',
       size: 2,
       description: 'Very nice!'
+      price: 300,
+      images: [
+        "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
+      ]
     },
     {
       name: 'Green',
       size: 4,
       description: 'Very nice!'
+      price: 300,
+      images: [
+        "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
+      ]
+
     }
   ];
 

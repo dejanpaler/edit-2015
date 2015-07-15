@@ -13,7 +13,12 @@
     {
       name: 'Black',
       size: 3,
-      description: 'Very nice!'
+      description: 'Very nice!',  // yoo
+      price: 110.50,
+      images: [
+        "https://pbs.twimg.com/media/BhgzCoICcAAvk6Y.jpg",
+        "images/green_doge_01"
+      ]
     },
     {
       name: 'Red',
@@ -23,12 +28,18 @@
     {
       name: 'Green',
       size: 2,
-      description: 'Very nice!'
+      description: 'Such green. Much doge. WOW!',
+      price: 1.75,
+      images: [
+        "../images/black_ball_01.jpg",
+        "https://i.imgur.com/nAeeF8W.jpg",
+        "../images/black_ball_01.jpg"
+      ]
     },
     {
       name: 'Black',
       size: 5,
-      description: 'Its round and black!'
+      description: 'Its round and black! Very nice. How much?'
     },
     {
       name: 'Red',

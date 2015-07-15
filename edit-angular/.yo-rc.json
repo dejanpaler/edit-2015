@@ -9,6 +9,6 @@
     "style": "css",
     "testFramework": "jasmine",
     "testScript": "js",
-    "lastUsedModule": "home"
+    "lastUsedModule": "app"
   }
 }

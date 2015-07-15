@@ -20,7 +20,7 @@
           $scope.name = "USPEH";
         }).
         error(function() {
-          $scope.name = "NEUSPEH";
+          $scope.name = "Failure. You are one.";
         });
 
     };

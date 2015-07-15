@@ -1,10 +1,10 @@
 package com.ev3.item;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.ev3.brick.BrickCommandsEndpoint;
+import com.ev3.brick.device.BrickClientEndpoint;
 import com.ev3.startup.StartupEvent;
 
 @Path("/items")
@@ -24,14 +24,20 @@ public class ItemService {
     Items items;
 
     @Inject
-    BrickCommandsEndpoint BC;
+    BrickClientEndpoint BC;
 
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
-        int i = 20;
+        /*int i = 20;
         for (int j = 1; j <= i; j++) {
             String title = "Item #" + j;
             items.createItem(title);
-        }
+        }*/
+    	
+    	//items.createItem(title)
+    	
+    	items.createItem("prvi", 0, 0, direction.left);
+    	items.createItem("drugi", 4, -2, direction.left);
+    	items.createItem("tretji", 3, 7, direction.right);
     }
 
     @GET
@@ -45,10 +51,11 @@ public class ItemService {
         return Response.ok(list).build();
     }
 
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response createItem(Item item) {
-        Item newItem = items.createItem(item.getTitle());
+        Item newItem = items.createItem(item.getTitle(), item.getCoorX(), item.getCoorY(), item.getDirection());
         return Response.status(Response.Status.CREATED).entity(newItem).build();
     }
 
@@ -62,8 +69,15 @@ public class ItemService {
     }
     @POST
     @Path("/go")
-    public Response go(@FormParam("go") String go) {
-        BC.sendMessage(go);
-        return Response.ok("action=" + go).build();
+    public Response test(String go){
+        try {
+            BC.sendCommand(go);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return Response.ok(go).build();
     }
+
+
 }

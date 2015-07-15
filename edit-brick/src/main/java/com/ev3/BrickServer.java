@@ -9,12 +9,27 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import lejos.hardware.Button;
+import lejos.hardware.motor.*;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.port.Port;
+import lejos.hardware.port.SensorPort;
+import lejos.robotics.SampleProvider;
+
 public class BrickServer {
 
     public static void main(String[] args) {
+        HelloWorld();
         startWebSocketServer();
+        //MotorForward();
     }
 
+    private void find_path(int x, int y)
+    {
+    	//EV3ColorSensor colorSensor = new EV3ColorSensor(colorSensorPort);
+    }
+    
+    
     private static void startWebSocketServer() {
         WebSocketCallback callback = new WebSocketCallback();
 
@@ -47,5 +62,22 @@ public class BrickServer {
         server.start();
         Log.info("Server started.");
         Log.info("Listening on " + ip + ":8081/ev3");
+        
+        Thread thread = new Thread(){
+            public void run(){
+            	System.out.print("Thread started");
+            	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+            		System.exit(0);
+            	}
+            }
+        };
+        thread.start();    
+    }
+
+    private static void HelloWorld(){
+    	System.out.print("Hello World!");
+    }
+    private static void MotorForward(){
+    	Motor.A.forward();
     }
 }

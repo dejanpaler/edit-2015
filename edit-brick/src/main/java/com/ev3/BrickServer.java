@@ -42,6 +42,8 @@ public class BrickServer {
         thread.start();
     	
         HelloWorld();
+        lm.close();
+        rm.close();
         startWebSocketServer();
         //find_path(1,1);
         //System.exit(0);

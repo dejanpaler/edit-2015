@@ -32,17 +32,17 @@ public class ItemService {
             String title = "Item #" + j;
             items.createItem(title);
         }*/
-        
-        //items.createItem(title)
-        
-        items.createItem("prvi", 0, 0, direction.up);
-        items.createItem("drugi", 4, -2, direction.up);
-        items.createItem("tretji", 3, 7, direction.down);
-        
-        boolean a = items.CheckFreeLocation(0, 0, direction.up);
-        boolean b = items.CheckFreeLocation(0, 0, direction.down);
-        
-        System.out.println("REZ: " + a + " " + b);
+    	
+    	//items.createItem(title)
+    	
+    	items.createItem("prvi", 0, 0, direction.up);
+    	items.createItem("drugi", 4, -2, direction.up);
+    	items.createItem("tretji", 3, 7, direction.down);
+    	
+    	boolean a = items.CheckFreeLocation(0, 0, direction.up);
+    	boolean b = items.CheckFreeLocation(0, 0, direction.down);
+    	
+    	System.out.println("REZ: " + a + " " + b);
     }
 
     @GET
@@ -88,10 +88,10 @@ public class ItemService {
     @Path("/create")
     public Response create(String s)
     {
-        
-        
-        //Item newItem = items.createItem(s, coorX, coorY, d);
-        
+    	
+    	
+    	//Item newItem = items.createItem(s, coorX, coorY, d);
+    	
         return Response.ok().build();
     }
 }

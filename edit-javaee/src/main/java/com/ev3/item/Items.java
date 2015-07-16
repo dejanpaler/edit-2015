@@ -67,4 +67,35 @@ public class Items {
     	
     	return !q.getResultList().isEmpty();
     }
+    
+    public Location GetFreeLocation()
+    {   	
+    	for (int i = 1; i <= rows/2; i++)
+    	{
+	    	for (int j = 1; j <= cols/2; j++)
+	    	{
+	    		if (CheckFreeLocation(i, -j, direction.down))
+	    		{
+	    			return new Location(i, -j, direction.down);
+	    		}
+	    		
+	    		else if(CheckFreeLocation(i, j, direction.down))
+	    		{
+	    			return new Location(i, j, direction.down);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, -j, direction.up))
+	    		{
+	    			return new Location(i, -j, direction.up);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, j, direction.up))
+	    		{
+	    			return new Location(i, j, direction.up);
+	    		}
+	    	}
+    	}
+    	
+    	return null;
+    }
 }

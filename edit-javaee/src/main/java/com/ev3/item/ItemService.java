@@ -22,7 +22,7 @@ public class ItemService {
 
     @Inject
     Items items;
-    
+
     @Inject
     BrickClientEndpoint BC;
 
@@ -32,16 +32,16 @@ public class ItemService {
             String title = "Item #" + j;
             items.createItem(title);
         }*/
-    	
+
     	//items.createItem(title)
-    	
+
     	items.createItem("prvi", 0, 0, direction.up);
     	items.createItem("drugi", 4, -2, direction.up);
     	items.createItem("tretji", 3, 7, direction.down);
-    	
+
     	boolean a = items.CheckFreeLocation(0, 0, direction.up);
     	boolean b = items.CheckFreeLocation(0, 0, direction.down);
-    	
+
     	System.out.println("REZ: " + a + " " + b);
     }
 
@@ -71,7 +71,7 @@ public class ItemService {
 
         return Response.ok(item).build();
     }
-    
+
     @POST
     @Path("/go")
     public Response test(String go){
@@ -83,15 +83,32 @@ public class ItemService {
         }
         return Response.ok(go).build();
     }
-    
+
     @POST
     @Path("/create")
     public Response create(String s)
     {
-    	
-    	
+
+
     	//Item newItem = items.createItem(s, coorX, coorY, d);
-    	
+
         return Response.ok().build();
+    }
+    @POST
+    @Path("/getItem")
+    public Response getItemById(String id){
+        Item item = items.findItem(id);
+        int coordX = item.getCoorX();
+        int coordY=item.getCoorY();
+        int direction = item.getDirection().ordinal();
+        String order = Integer.toString(coordX)+";"+Integer.toString(coordY)+";"+Integer.toString(direction);
+        try {
+            BC.sendCommand(order);
+            return Response.ok("Order sent").build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(406).build();
+        }
+
     }
 }

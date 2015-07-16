@@ -42,9 +42,9 @@ public class BrickServer {
         thread.start();
     	
         HelloWorld();
-        //startWebSocketServer();
-        find_path(1,1);
-        System.exit(0);
+        startWebSocketServer();
+        //find_path(1,1);
+        //System.exit(0);
         //MotorForward();
     }
 

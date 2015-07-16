@@ -1,2 +1,30 @@
 <h2>home</h2>
-<p>{{home.ctrlName}}</p>
+<div ng-controller="HomeCtrl as hct">
+  <p>{{hct.ctrlName}}</p>
+</div>
+
+<div ng-controller="DomaCtrl">
+  <button class="btn btn-success" ng-click="sen()">{{name}}</button>
+</div>
+
+<br/>
+
+<div ng-controller="StoreCtrl">
+  <label>Search: <input ng-model="searchText" class="form-control input"></label>
+  <br/>
+
+  <!--  Product Container  -->
+  <div class="list-group-item" ng-repeat="product in products | filter:searchText">
+    <h4>{{product.name + ", size: "+product.size}} <em class="pull-right">{{product.price | currency}}</em></h4>
+    <h5>{{"description: "+product.description}}</h5>
+
+  <!-- Image Gallery  -->
+      <div>
+        <img ng-src="{{product.images[0]}}" width="200px" alt="Doge no lives. :<" />
+      </div>
+  </div>
+
+</div>
+
+
+

@@ -10,25 +10,6 @@ import javax.persistence.Query;
 
 @Stateless
 public class Items {
-
-	private int rows;
-	private int cols;
-
-	public void setSize(int r, int c)
-	{
-		this.rows = r;
-		this.cols = c;
-	}
-	
-	public int getRows()
-	{
-		return rows;
-	}
-	
-	public int getCols()
-	{
-		return cols;
-	}
 	
 	public void findFirstEmptySpace()
 	{
@@ -65,15 +46,22 @@ public class Items {
     	
     	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");    	
     	
-    	return !q.getResultList().isEmpty();
+    	return q.getResultList().isEmpty();
     }
     
     public Location GetFreeLocation()
     {   	
-    	for (int i = 1; i <= rows/2; i++)
+    	// Hardcoded storage size.
+    	int rows = 4;
+    	int cols = 4;
+    	
+    	int r = (int)rows/2;
+    	int c = (int)cols/2;
+    	
+    	for (int i = 1; i <= r; i++)
     	{
-	    	for (int j = 1; j <= cols/2; j++)
-	    	{
+	    	for (int j = 1; j <= c; j++)
+	    	{	    		
 	    		if (CheckFreeLocation(i, -j, direction.down))
 	    		{
 	    			return new Location(i, -j, direction.down);
@@ -97,5 +85,19 @@ public class Items {
     	}
     	
     	return null;
+    }
+    
+    public void AddItem(String title) throws Exception
+    {    	
+    	Location loc = GetFreeLocation();
+    	
+    	if (loc != null)
+    	{    	
+    		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
+    	}
+    	else
+    	{
+    		throw new Exception("No free space in storage!");
+    	}
     }
 }

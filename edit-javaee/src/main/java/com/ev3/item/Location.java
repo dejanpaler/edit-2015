@@ -27,4 +27,11 @@ public class Location {
 	{
 		return dir;
 	}
+	
+	 @Override public String toString()
+	 {
+		 String d = (dir == direction.up) ? "up" : "down";
+		 
+		 return Integer.toString(row) + " " + Integer.toString(col) + " " + d;
+	 }
 }

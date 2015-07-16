@@ -1,22 +1,22 @@
-<div class="container">
-  <div class="col-md-4" style="margin-left: -14px">
-    <input type="text" ng-model="search.title" placeholder="Search..." class="form-control input"/>
-  </div>
-  <div class="col-md-8"></div>
+<div class="col-md-4">
+  <input ng-model="search.name" class="form-control input" placeholder="Search...">
 </div>
-<div class="container">
+<br />
+<br />
+<br />
+<br />
+<div ng-repeat="item in itemList | filter:search">
   <div class="row">
-    <div ng-repeat="item in itemList | filter:search">
-      <div class="col-md-4">
-        <div>
-        <!--  <a href="/#/order/{{item.id}}" class="item-title">{{item.title +" "+item.id}}</a> -->
-        <button class="btn btn-default" ng-click="sendId(item.id)">{{item.title}}</button>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <!--  <button class="btn btn-default" ng-click="vm.sendId(item.id)">BUTTON</button> -->
-        <button class="btn btn-default" ng-click="onAddCart(item.id)">{{!isInCart(item.id) ? 'Add to' : 'Remove from'}} cart</button>
-      </div>
+    <div class="col-md-4">
+      <img ng-src="http://www.coinbuzz.com/wp-content/uploads/2014/08/dogecoin.jpg" width="100px" alt="The image is broken." />
+      <a href="/#/order/{{item.id}}" class="item-title" ng-click="sendId(item.id)" ng-bind="item.title"></a>
+    </div>
+    <div class="col-md-4" ng-if="!isInCart(item.id)">
+      <button class="btn btn-success" style="margin-top: 20px" ng-click="onAddCart(item.id)">Add cart</button>
+    </div>
+    <div class="col-md-4" ng-if="isInCart(item.id)">
+      <button class="btn btn-danger" style="margin-top: 20px" ng-click="onAddCart(item.id)">Remove from cart</button>
     </div>
   </div>
+  <br />
 </div>

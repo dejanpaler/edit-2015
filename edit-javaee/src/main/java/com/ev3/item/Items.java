@@ -14,10 +14,10 @@ public class Items {
     @PersistenceContext
     private EntityManager em;
 
-    public Item createItem(String title) {
+    public Item createItem(String title, int coorX, int coorY, direction d) {
         // EntityManager em = emf.createEntityManager();
         Item newItem = new Item.Builder().id(ItemId.generate()).title(title)
-                .created(Instant.now().toEpochMilli()).build();
+                .created(Instant.now().toEpochMilli()).coorX(coorX).coorY(coorY).dir(d).build();
         em.persist(newItem);
         return newItem;
     }
@@ -26,13 +26,14 @@ public class Items {
         // EntityManager em = emf.createEntityManager();
         return em.find(Item.class, id);
     }
+    public Collection<Item>  findItemByTitle(String title){
+        Query q = em.createQuery("SELECT i FROM Item i WHERE title='"+title+"'");
+        return q.getResultList();
+    }
 
     public Collection<Item> findAllItems() {
         // EntityManager em = emf.createEntityManager();
         Query q = em.createQuery("SELECT i FROM Item i");
         return q.getResultList();
     }
-
-
-
 }

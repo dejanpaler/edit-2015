@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -22,16 +21,14 @@ public class ItemService {
 
     @Inject
     Items items;
-
     @Inject
     BrickClientEndpoint BC;
 
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
-        int i = 20;
-        for (int j = 1; j <= i; j++) {
-            String title = "Item #" + j;
-            items.createItem(title);
-        }
+    	items.createItem("prvi", 0, 0, direction.left);
+    	items.createItem("drugi", 4, -2, direction.left);
+    	items.createItem("tretji", 3, 7, direction.right);
+    	items.createItem("test", 4, 4, direction.right);
     }
 
     @GET
@@ -45,32 +42,48 @@ public class ItemService {
         return Response.ok(list).build();
     }
 
-
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response createItem(Item item) {
-        Item newItem = items.createItem(item.getTitle());
+        Item newItem = items.createItem(item.getTitle(), item.getCoorX(), item.getCoorY(), item.getDirection());
         return Response.status(Response.Status.CREATED).entity(newItem).build();
     }
 
-    @GET
+/*    @GET
     @Path("/{itemId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getItem(@PathParam("itemId") String itemId) {
         Item item = items.findItem(itemId);
 
         return Response.ok(item).build();
-    }
+    }*/
     @POST
     @Path("/go")
     public Response test(String go){
+
         try {
             BC.sendCommand(go);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return Response.ok(go).build();
+    }
+
+    @POST
+    @Path("/getItem")
+    public Response getItem(String id){
+           Item item = items.findItem(id);
+           int x=item.getCoorX();
+           int y=item.getCoorY();
+           int dir=item.getDirection().ordinal();
+           String order = Integer.toString(x)+";"+Integer.toString(y)+";"+Integer.toString(dir);
+           try {
+            BC.sendCommand(order);
+            return Response.ok("Order sent").build();
+        } catch (Exception e) {
+            return Response.status(406).build();
+        }
+
     }
 
 

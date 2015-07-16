@@ -5,6 +5,7 @@ import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 
+import lejos.hardware.Sound;
 import lejos.hardware.Button;
 import lejos.hardware.motor.*;
 import lejos.utility.Delay;
@@ -149,6 +150,7 @@ public class BrickCommands extends AbstractReceiveListener {
     		order.x = order.x -(2*order.x);
     	}
     	Delay.msDelay(1000);
+        Sound.beepSequenceUp();
         Log.info("Sending robot to location");
         //WebSockets.sendText("[ev3.brick] > Sending robot to location." , channel, null);
         
@@ -196,9 +198,21 @@ public class BrickCommands extends AbstractReceiveListener {
         else
         	Turn("right");
         */
+
+        //Forward(360);
+
+        //Motor.B.close();
+        //Motor.C.close();
+        
+    	Motor.B.forward();
+    	Motor.C.forward();
         
         Button.LEDPattern(0);
-    	Delay.msDelay(1000);
+    	Delay.msDelay(10000);
+
+        Motor.B.stop();
+        Motor.C.stop();
+        Sound.beepSequence();
         Log.info("Robot at location.");
         //WebSockets.sendText("[ev3.brick] > Robot at location." , channel, null);
     }
@@ -231,7 +245,15 @@ public class BrickCommands extends AbstractReceiveListener {
     private void DropItem() {
         Log.info("Dropping..:");
     	//move forward
-    	//drop item
+        /*
+	   	 Motor.A.backward();
+	     Delay.msDelay(1000);
+	     Motor.A.rotate(-180);
+	     Motor.B.setSpeed(720);// 2 RPM 720
+	     Motor.C.setSpeed(720);
+	     Motor.B.backward();
+	     Motor.C.backward();
+	     */
     	//move backward
         Button.LEDPattern(3);
         Log.info("Item dropped.");
@@ -265,41 +287,25 @@ public class BrickCommands extends AbstractReceiveListener {
         	}
     	}
     }
-    private static void Poravnava(){
-    	
+    private static void Align(){
     	Motor.A.backward();
     	Delay.msDelay(1000);
     	Motor.A.stop();
     }
-    public static void Naprej(int i){
+    public static void Forward(int i){
     	Motor.B.setSpeed(i);// 2 RPM 720
         Motor.C.setSpeed(i);
         Motor.B.forward();
         Motor.C.forward();
     }
-    public static void Nazaj(int i){
+    public static void Backward(int i){
     	Motor.B.setSpeed(i);// 2 RPM 720
         Motor.C.setSpeed(i);
         Motor.B.backward();
         Motor.C.backward();
     }
-    public static void Zgrabi(){
-    	 Motor.A.rotate(-180);
-    	 Delay.msDelay(1000);
-    	 Motor.A.rotate(180);
-    	 Delay.msDelay(1000);
-         Motor.A.forward();
-         Delay.msDelay(1000);
-        
+    public static void Stop(){
+        Motor.B.stop();
+        Motor.C.stop();
     }
-    public static void Odlozi(){
-    	 Motor.A.backward();
-         Delay.msDelay(1000);
-         Motor.A.rotate(-180);
-         Motor.B.setSpeed(720);// 2 RPM 720
-         Motor.C.setSpeed(720);
-         Motor.B.backward();
-         Motor.C.backward();
-    }
-    
 }

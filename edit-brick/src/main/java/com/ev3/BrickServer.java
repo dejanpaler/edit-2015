@@ -42,9 +42,11 @@ public class BrickServer {
         thread.start();
     	
         HelloWorld();
-        //startWebSocketServer();
-        find_path(1,1);
-        System.exit(0);
+        lm.close();
+        rm.close();
+        startWebSocketServer();
+        //find_path(1,1);
+        //System.exit(0);
         //MotorForward();
     }
 
@@ -63,76 +65,7 @@ public class BrickServer {
         sampleProvider = colorSensor.getRedMode();
         sampleSize = sampleProvider.sampleSize();
 
-    	lm.setSpeed(420);
-    	rm.setSpeed(420);
-        
-        
-        int i = 0;
-        int colorID;
-        float threshold = (float)0.25;
-        while(true) 
-        {
-            //float[] sample = getSample();
-            colorID = colorSensor.getColorID();
-            
-            //System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
-            if (colorID == 7)
-            {
-            	System.out.println("grem naravnost");
-            	lm.backward();
-            	rm.backward();
-            }
-            else if (colorID == 6)// need to find the line again
-            {
-            	// turn left and try to find the line again
-            	System.out.println("iscemo linijo levo");
-            	lm.stop();
-            	rm.stop();
-            	boolean found = false;
-            	rm.rotate(-100, true);
-            	lm.rotate(100, true);
-            	
-            	while(rm.isMoving() && lm.isMoving())
-            	{
-            		//sample = getSample();
-            		colorID = colorSensor.getColorID();
-            		if (colorID == 7)
-            		{
-            			rm.stop();
-            			lm.stop();
-            			found = true;
-            			break;
-            		}
-            	}
-            	
-            	// if searching towards left didn't succeed, search towards right
-            	if (!found)
-            	{
-            		System.out.println("iscemo linijo desno");
-            		lm.rotate(-200, true);
-            		rm.rotate(200, true);
-            		
-            		while(rm.isMoving() && lm.isMoving())
-                	{
-            			//sample = getSample();
-            			colorID = colorSensor.getColorID();
-                		if (colorID == 7)
-                		{
-                			lm.stop();
-                			rm.stop();
-                			found = true;
-                			break;
-                		}
-                	}
-            	}	
-            }
-            if (i == 100000)
-            	System.exit(0);
-            i++;
-        }
-        
         // sample spam and motor work
-        /*
         int i = 0;
         float threshold = (float)0.25;
         while(true) {
@@ -158,7 +91,6 @@ public class BrickServer {
             	System.exit(0);
             i++;
         }
-        */
     }
     
     

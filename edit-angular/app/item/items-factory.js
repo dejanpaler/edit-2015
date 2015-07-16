@@ -17,6 +17,7 @@
 
     ItemsBase.getAllItems = function () {
       var defer = $q.defer();
+      // 10.80.49.2:8080/go
       $http.get('http://localhost:8080/edit-javaee/items', {
         cache: 'true'
       }).success(function (data) {

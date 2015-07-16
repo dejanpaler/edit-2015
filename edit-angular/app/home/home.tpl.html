@@ -1,2 +1,15 @@
 <h2>home</h2>
-<p>{{home.ctrlName}}</p>
+<div ng-controller="HomeCtrl as hct">
+  <p>{{hct.ctrlName}}</p>
+</div>
+
+<div ng-controller="DomaCtrl">
+  <button class="btn btn-success" ng-click="sen()">{{name}}</button>
+</div>
+
+<br/>
+
+<produkts></produkts>
+
+
+

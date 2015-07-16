@@ -1,0 +1,30 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '-g' ]
+2 info using npm@2.5.1
+3 info using node@v0.12.1
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec { raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: 'C:\\Users\\Kokanm\\Documents\\edit-2015',
+7 silly cache add   type: 'local' }
+8 error addLocal Could not install C:\Users\Kokanm\Documents\edit-2015
+9 verbose stack Error: EISDIR, read
+9 verbose stack     at Error (native)
+10 verbose cwd C:\Users\Kokanm\Documents\edit-2015
+11 error Windows_NT 6.3.9600
+12 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "-g"
+13 error node v0.12.1
+14 error npm  v2.5.1
+15 error code EISDIR
+16 error errno -4068
+17 error EISDIR, read
+18 error If you need help, you may report this error at:
+18 error     <http://github.com/npm/npm/issues>
+19 verbose exit [ -4068, true ]

@@ -2,10 +2,8 @@ package com.ev3.item;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table
 public class Item {
 	
     @Id

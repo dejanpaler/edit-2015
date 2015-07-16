@@ -10,7 +10,12 @@ import javax.persistence.Query;
 
 @Stateless
 public class Items {
-
+	
+	public void findFirstEmptySpace()
+	{
+		Collection<Item> items = findAllItems();
+	}
+	
     @PersistenceContext
     private EntityManager em;
 
@@ -32,7 +37,67 @@ public class Items {
         Query q = em.createQuery("SELECT i FROM Item i");
         return q.getResultList();
     }
-
-
-
+    
+    public boolean CheckFreeLocation(int row, int col, direction dir)
+    {
+    	String r = Integer.toString(row);
+    	String c = Integer.toString(col);
+    	String d = Integer.toString(dir.ordinal());
+    	
+    	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");    	
+    	
+    	return q.getResultList().isEmpty();
+    }
+    
+    public Location GetFreeLocation()
+    {   	
+    	// Hardcoded storage size.
+    	int rows = 4;
+    	int cols = 4;
+    	
+    	int r = (int)rows/2;
+    	int c = (int)cols/2;
+    	
+    	for (int i = 1; i <= r; i++)
+    	{
+	    	for (int j = 1; j <= c; j++)
+	    	{	    		
+	    		if (CheckFreeLocation(i, -j, direction.down))
+	    		{
+	    			return new Location(i, -j, direction.down);
+	    		}
+	    		
+	    		else if(CheckFreeLocation(i, j, direction.down))
+	    		{
+	    			return new Location(i, j, direction.down);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, -j, direction.up))
+	    		{
+	    			return new Location(i, -j, direction.up);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, j, direction.up))
+	    		{
+	    			return new Location(i, j, direction.up);
+	    		}
+	    	}
+    	}
+    	
+    	return null;
+    }
+    
+    public void AddItem(String title) throws Exception
+    {    	
+    	Location loc = GetFreeLocation();
+    	
+    	if (loc != null)
+    	{    	
+    		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
+    	}
+    	else
+    	{
+    		throw new Exception("No free space in storage!");
+    	}
+    }
 }

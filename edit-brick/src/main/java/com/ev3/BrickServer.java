@@ -13,21 +13,38 @@ import java.util.Enumeration;
 import lejos.hardware.Button;
 import lejos.hardware.motor.*;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 public class BrickServer {
 
 	 private static Port colorSensorPort = SensorPort.S2;
-	    private static EV3ColorSensor colorSensor;
-	    private static SampleProvider sampleProvider;
-	    private static int sampleSize;
+    private static EV3ColorSensor colorSensor;
+    private static SampleProvider sampleProvider;
+    private static int sampleSize;
+    private static RegulatedMotor lm = new EV3LargeRegulatedMotor(MotorPort.B);
+    private static RegulatedMotor rm = new EV3LargeRegulatedMotor(MotorPort.C);
 	
     public static void main(String[] args) {
+    	
+    	// wait for exit
+    	Thread thread = new Thread(){
+            public void run(){
+            	System.out.print("Thread started");
+            	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+            		System.exit(0);
+            	}
+            }
+        };
+        thread.start();
+    	
         HelloWorld();
         //startWebSocketServer();
         find_path(1,1);
+        System.exit(0);
         //MotorForward();
     }
 
@@ -46,10 +63,31 @@ public class BrickServer {
         sampleProvider = colorSensor.getRedMode();
         sampleSize = sampleProvider.sampleSize();
 
-        // Takes some samples and prints them
-        for (int i = 0; i < 4; i++) {
+        // sample spam and motor work
+        int i = 0;
+        float threshold = (float)0.25;
+        while(true) {
             float[] sample = getSample();
             System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
+            if (sample[0] < threshold)
+            {
+            	System.out.println("grem levo");
+            	lm.setSpeed(540);
+            	lm.backward();
+            	rm.setSpeed(0);
+            	rm.stop();
+            }
+            else
+            {
+            	System.out.println("grem desno");
+            	lm.setSpeed(0);
+            	lm.stop();
+            	rm.setSpeed(540);
+            	rm.backward();
+            }
+            if (i == 100000)
+            	System.exit(0);
+            i++;
         }
     }
     

@@ -50,7 +50,13 @@
         };
 
         $scope.sendId = function(id) {
-          $http.post("http://10.80.49.6:8080/edit-javaee/items/getItem", id);
+          $http.post("http://10.80.49.6:8080/edit-javaee/items/getItem", {param:id} )
+            .success(function(){
+              alert("Success");
+            })
+            .error(function(){
+              alert("Error");
+            });
         };
 
         $scope.isInCart = Cart.isInCart;

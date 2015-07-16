@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="col-md-4" style="margin-left: -14px">
+    <input type="text" ng-model="search.title" placeholder="Search..." class="form-control input"/>
+  </div>
+  <div class="col-md-8"></div>
+</div>
+<div class="container">
+  <div class="row">
+    <div ng-repeat="item in itemList | filter:search">
+      <div class="col-md-4">
+        <div>
+        <!--  <a href="/#/order/{{item.id}}" class="item-title">{{item.title +" "+item.id}}</a> -->
+        <button class="btn btn-default" ng-click="sendId(item.id)">{{item.title}}</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <!--  <button class="btn btn-default" ng-click="vm.sendId(item.id)">BUTTON</button> -->
+        <button class="btn btn-default" ng-click="onAddCart(item.id)">{{!isInCart(item.id) ? 'Add to' : 'Remove from'}} cart</button>
+      </div>
+    </div>
+  </div>
+</div>

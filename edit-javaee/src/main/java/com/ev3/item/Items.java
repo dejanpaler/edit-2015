@@ -11,30 +11,30 @@ import javax.persistence.Query;
 @Stateless
 public class Items {
 
-    private int rows;
-    private int cols;
+	private int rows;
+	private int cols;
 
-    public void setSize(int r, int c)
-    {
-        this.rows = r;
-        this.cols = c;
-    }
-    
-    public int getRows()
-    {
-        return rows;
-    }
-    
-    public int getCols()
-    {
-        return cols;
-    }
-    
-    public void findFirstEmptySpace()
-    {
-        Collection<Item> items = findAllItems();
-    }
-    
+	public void setSize(int r, int c)
+	{
+		this.rows = r;
+		this.cols = c;
+	}
+	
+	public int getRows()
+	{
+		return rows;
+	}
+	
+	public int getCols()
+	{
+		return cols;
+	}
+	
+	public void findFirstEmptySpace()
+	{
+		Collection<Item> items = findAllItems();
+	}
+	
     @PersistenceContext
     private EntityManager em;
 
@@ -59,12 +59,45 @@ public class Items {
     
     public boolean CheckFreeLocation(int row, int col, direction dir)
     {
-        String r = Integer.toString(row);
-        String c = Integer.toString(col);
-        String d = Integer.toString(dir.ordinal());
-        
-        Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");       
-        
-        return !q.getResultList().isEmpty();
+    	String r = Integer.toString(row);
+    	String c = Integer.toString(col);
+    	String d = Integer.toString(dir.ordinal());
+    	
+    	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");    	
+    	
+    	return !q.getResultList().isEmpty();
     }
+    
+    public Location GetFreeLocation()
+    {   	
+    	for (int i = 1; i <= rows/2; i++)
+    	{
+	    	for (int j = 1; j <= cols/2; j++)
+	    	{
+	    		if (CheckFreeLocation(i, -j, direction.down))
+	    		{
+	    			return new Location(i, -j, direction.down);
+	    		}
+	    		
+	    		else if(CheckFreeLocation(i, j, direction.down))
+	    		{
+	    			return new Location(i, j, direction.down);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, -j, direction.up))
+	    		{
+	    			return new Location(i, -j, direction.up);
+	    		}
+	    		
+	    		else if (CheckFreeLocation(i, j, direction.up))
+	    		{
+	    			return new Location(i, j, direction.up);
+	    		}
+	    	}
+    	}
+    	
+    	return null;
+    }
+    
+    //t
 }

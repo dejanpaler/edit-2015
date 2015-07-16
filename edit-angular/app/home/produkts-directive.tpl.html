@@ -1,0 +1,10 @@
+<label>Search: <input ng-model="search.name" class="form-control input"></label>
+<br/>
+<div class="list-group-item" ng-repeat="product in products | filter:search">
+  <h4>{{product.name + ", size: "+product.size}} <em class="pull-right">{{product.price | currency}}</em></h4>
+  <h5>{{"description: "+product.description}}</h5>
+
+  <div>
+    <img ng-src="{{product.images[0]}}" width="200px" alt="The image is broken." />
+  </div>
+</div>

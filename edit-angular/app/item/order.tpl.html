@@ -10,9 +10,9 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="item in vm.cart">
-				<td>{{$index}}</td>
+				<td>{{$index+1}}</td>
 				<td>{{item.title}}</td>
-				<td>{{(Math.rand() * 200)}}</td>
+				<td>{{Math.round(Math.random()*200)}}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -24,4 +24,3 @@
 	</div>
 </div>
 <div ng-if="vm.cart.length <= 0" class="alert alert-warning">Your cart is empty. Please add items to check out.</div>
-{{ vm.cart }}

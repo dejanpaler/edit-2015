@@ -1,22 +1,5 @@
 <div class="container">
 	<div ng-if="vm.error" class="alert alert-danger" role="alert"><strong>Error!</strong> {{vm.error}}</div>
-	<h2>List of items</h2>
+	<h2 id="teme">List of items</h2>
 </div>
-<div class="container">
-	<div class="col-md-4" style="margin-left: -14px">
-		<input type="text" ng-model="searchTerm" placeholder="Search..." class="form-control input"/>
-	</div>
-	<div class="col-md-8"></div>
-</div>
-<div class="container">
-	<div class="row">
-		<div ng-repeat="item in vm.itemList | filter:searchTerm" style="padding: 20px 0;">
-			<div class="col-md-4">
-				<a href="/#/order/{{item.id}}" class="item-title">{{item.title}}</a>
-			</div>
-			<div class="col-md-6">
-				<button class="btn btn-default" ng-click="vm.onAddCart(item.id)">{{!vm.isInCart(item.id) ? 'Add to' : 'Remove from'}} cart</button>
-			</div>
-		</div>
-	</div>
-</div>
+<products></products>

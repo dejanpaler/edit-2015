@@ -49,21 +49,17 @@
           }
         };
 
-        $scope.sendId = function(id) {
-          $http.post("http://10.80.49.6:8080/edit-javaee/items/getItem", {param:id} )
-            .success(function(){
+        $scope.sendId = function (id) {
+          $http.post("http://10.80.49.2:8080/edit-javaee/items/do", {id: id, command: "get"})
+            .success(function () {
               alert("Success");
             })
-            .error(function(){
+            .error(function () {
               alert("Error");
             });
         };
 
         $scope.isInCart = Cart.isInCart;
-      },
-      link: function (scope, element, attrs) {
-        /*jshint unused:false */
-        /*eslint "no-unused-vars": [2, {"args": "none"}]*/
       }
     };
   }

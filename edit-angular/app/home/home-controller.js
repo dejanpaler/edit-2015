@@ -16,5 +16,4 @@
     var vm = this;
     vm.ctrlName = 'HomeCtrl';
   }
-
 }());

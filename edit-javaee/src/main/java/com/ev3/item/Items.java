@@ -87,17 +87,18 @@ public class Items {
     	return null;
     }
 
-    public void AddItem(String title) throws Exception
+    public Location AddItem(String title)
     {
     	Location loc = GetFreeLocation();
 
     	if (loc != null)
     	{
     		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
+    		return loc;
     	}
     	else
     	{
-    		throw new Exception("No free space in storage!");
+    	    return null;
     	}
     }
 

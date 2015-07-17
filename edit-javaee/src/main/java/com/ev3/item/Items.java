@@ -63,7 +63,7 @@ public class Items {
         	for (int i = 1; i <= r; i++)
         	{
         	    for (int j = 1; j <= c; j++)
-    	    	{
+        	    {
     	    		if (CheckFreeLocation(i, -j, direction.down))
     	    		{
     	    			return new Location(i, -j, direction.down);
@@ -83,7 +83,7 @@ public class Items {
     	    		{
     	    			return new Location(i, j, direction.up);
     	    		}
-    	    	}
+        	    }
         	}
     	}
 

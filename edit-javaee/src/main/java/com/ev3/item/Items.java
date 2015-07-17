@@ -123,4 +123,21 @@ public class Items {
             return false;
         }
     }
+
+    public void RemoveItem(String id)
+    {
+        try
+        {
+            Item item = findItem(id);
+
+            if (item != null)
+            {
+                em.remove(item);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

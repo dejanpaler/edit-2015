@@ -21,7 +21,7 @@ import lejos.robotics.SampleProvider;
 
 public class BrickServer {
 
-	 private static Port colorSensorPort = SensorPort.S2;
+     private static Port colorSensorPort = SensorPort.S2;
     private static EV3ColorSensor colorSensor;
     private static SampleProvider sampleProvider;
     private static int sampleSize;
@@ -30,21 +30,22 @@ public class BrickServer {
 
     public static void main(String[] args) {
 
-    	// wait for exit
-    	Thread thread = new Thread(){
+        // wait for exit
+        Thread thread = new Thread(){
             public void run(){
-            	Log.info("Thread started");
-            	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
-            		System.exit(0);
-            	}
+                System.out.print("Thread started");
+                if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+                    System.exit(0);
+                }
             }
         };
         thread.start();
 
         HelloWorld();
-        lm.close();
-        rm.close();
         startWebSocketServer();
+        //find_path(1,1);
+        //System.exit(0);
+        //MotorForward();
     }
 
     private static float[] getSample() {
@@ -58,36 +59,106 @@ public class BrickServer {
 
     private static void find_path(int x, int y)
     {
-    	colorSensor = new EV3ColorSensor(colorSensorPort);
+        colorSensor = new EV3ColorSensor(colorSensorPort);
         sampleProvider = colorSensor.getRedMode();
         sampleSize = sampleProvider.sampleSize();
 
+        lm.setSpeed(420);
+        rm.setSpeed(420);
+
+
+        int i = 0;
+        int colorID;
+        float threshold = (float)0.25;
+        while(true)
+        {
+            //float[] sample = getSample();
+            colorID = colorSensor.getColorID();
+
+            //System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
+            if (colorID == 7)
+            {
+                System.out.println("grem naravnost");
+                lm.backward();
+                rm.backward();
+            }
+            else if (colorID == 6)// need to find the line again
+            {
+                // turn left and try to find the line again
+                System.out.println("iscemo linijo levo");
+                lm.stop();
+                rm.stop();
+                boolean found = false;
+                rm.rotate(-100, true);
+                lm.rotate(100, true);
+
+                while(rm.isMoving() && lm.isMoving())
+                {
+                    //sample = getSample();
+                    colorID = colorSensor.getColorID();
+                    if (colorID == 7)
+                    {
+                        rm.stop();
+                        lm.stop();
+                        found = true;
+                        break;
+                    }
+                }
+
+                // if searching towards left didn't succeed, search towards right
+                if (!found)
+                {
+                    System.out.println("iscemo linijo desno");
+                    lm.rotate(-200, true);
+                    rm.rotate(200, true);
+
+                    while(rm.isMoving() && lm.isMoving())
+                    {
+                        //sample = getSample();
+                        colorID = colorSensor.getColorID();
+                        if (colorID == 7)
+                        {
+                            lm.stop();
+                            rm.stop();
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (i == 100000)
+                System.exit(0);
+            i++;
+        }
+
         // sample spam and motor work
+        /*
         int i = 0;
         float threshold = (float)0.25;
         while(true) {
             float[] sample = getSample();
-            Log.info("N=" + i + " Sample=" + Arrays.toString(sample));
+            System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
             if (sample[0] < threshold)
             {
-            	Log.info("grem levo");
-            	lm.setSpeed(540);
-            	lm.backward();
-            	rm.setSpeed(0);
-            	rm.stop();
+                System.out.println("grem levo");
+                lm.setSpeed(540);
+                lm.backward();
+                rm.setSpeed(0);
+                rm.stop();
             }
             else
             {
-            	Log.info("grem desno");
-            	lm.setSpeed(0);
-            	lm.stop();
-            	rm.setSpeed(540);
-            	rm.backward();
+                System.out.println("grem desno");
+                lm.setSpeed(0);
+                lm.stop();
+                rm.setSpeed(540);
+                rm.backward();
             }
             if (i == 100000)
-            	System.exit(0);
+                System.exit(0);
             i++;
         }
+        */
     }
 
 
@@ -114,6 +185,7 @@ public class BrickServer {
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
+
         Log.info("Starting server...");
         final String host = "0.0.0.0";
         Undertow server = Undertow.builder().addHttpListener(8081, host)
@@ -125,9 +197,9 @@ public class BrickServer {
     }
 
     private static void HelloWorld(){
-    	Log.info("Hello World!");
+        System.out.print("Hello World!");
     }
     private static void MotorForward(){
-    	Motor.A.forward();
+        Motor.A.forward();
     }
 }

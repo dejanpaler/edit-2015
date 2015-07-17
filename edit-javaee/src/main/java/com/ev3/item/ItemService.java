@@ -28,6 +28,9 @@ public class ItemService {
     @Inject
     BrickClientEndpoint BC;
 
+    @Inject
+    Items I;
+
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
         /*
          * int i = 20; for (int j = 1; j <= i; j++) { String title = "Item #" +
@@ -101,11 +104,11 @@ public class ItemService {
 
     @POST
     @Path("/do")
+
     public Response command(String command) {
         System.out.println("Got order");
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
-            System.out.println("Parsed: " + jsonCommand.toString());
             if (jsonCommand.getString("command").equals("get")) {
                 Item item = items.findItem(jsonCommand.getString("id"));
                 String coords = Integer.toString(item.getCoorX()) + ";" + Integer.toString(item.getCoorY()) + ";"
@@ -114,7 +117,16 @@ public class ItemService {
                 BC.sendCommand(order.toString());
                 return Response.ok(order).build();
             } else {
-                return Response.ok().build();
+                Location location = items.AddItem(jsonCommand.getString("title"));
+                if (location != null) {
+                    String data = Integer.toString(location.getCol()) + ";" + Integer.toString(location.getRow()) + ";"
+                            + Integer.toString(location.getDirection().ordinal());
+                    JsonObject order = Json.createObjectBuilder().add("command", "put").add("data", data).build();
+                    BC.sendCommand(order.toString());
+                    return Response.ok("Item: \"" + jsonCommand.getString("title") + "\" added to storage.").build();
+                } else {
+                    return Response.ok("Storage is full").build();
+                }
             }
 
         } catch (Exception e) {

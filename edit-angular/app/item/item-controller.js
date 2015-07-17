@@ -35,6 +35,16 @@
       }
     };
 
+    vm.sendId = function(id) {
+      $http.post("http://10.80.49.6:8080/edit-javaee/items/getItem", id)
+        .success(function(){
+          alert("Success");
+        })
+        .error(function(){
+          alert("Error");
+        });
+    };
+
     vm.isInCart = Cart.isInCart;
   }
 }());

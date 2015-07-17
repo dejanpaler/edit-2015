@@ -6,6 +6,7 @@ import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 
 import lejos.hardware.Button;
+import lejos.hardware.motor.*;
 import lejos.utility.Delay;
 
 import java.io.StringReader;
@@ -107,13 +108,13 @@ public class BrickCommands extends AbstractReceiveListener {
 
     private Order ParseCommand(String message) {
     	int i = message.indexOf(";");
-    	int j = message.indexOf(";", i);
-    	int k = message.indexOf(";", j);
+    	int j = message.indexOf(";", i+1);
+    	int k = message.indexOf(";", j+1);
     	Order order = new Order();
     	order.x = Integer.parseInt(message.substring(0, i));
-    	order.y = Integer.parseInt(message.substring(i, j));
-    	order.side = Integer.parseInt(message.substring(j, k));
-    	order.getItem = Integer.parseInt(message.substring(k));
+    	order.y = Integer.parseInt(message.substring(i+1, j));
+    	order.side = Integer.parseInt(message.substring(j+1, k));
+    	order.getItem = Integer.parseInt(message.substring(k+1));
         return order;
     }
     
@@ -214,7 +215,14 @@ public class BrickCommands extends AbstractReceiveListener {
     private void PickupItem() {
         Log.info("Picking up item");
     	//move forward
-    	//pickup item
+        /*
+	   	Motor.A.rotate(-180);
+	   	Delay.msDelay(1000);
+	   	Motor.A.rotate(180);
+	   	Delay.msDelay(1000);
+        Motor.A.forward();
+        Delay.msDelay(1000);
+        */
     	//move backward
         Button.LEDPattern(2);
         Log.info("Item picked up");
@@ -245,4 +253,53 @@ public class BrickCommands extends AbstractReceiveListener {
     	}
     	
     }
+    private static void ForwardTest(){
+    	System.out.print("Press Back, when you want to stop!");
+    	Motor.B.forward();
+    	Motor.C.forward();
+    	while(true){
+        	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
+            	Motor.B.stop();
+            	Motor.C.stop();
+        		break;
+        	}
+    	}
+    }
+    private static void Poravnava(){
+    	
+    	Motor.A.backward();
+    	Delay.msDelay(1000);
+    	Motor.A.stop();
+    }
+    public static void Naprej(int i){
+    	Motor.B.setSpeed(i);// 2 RPM 720
+        Motor.C.setSpeed(i);
+        Motor.B.forward();
+        Motor.C.forward();
+    }
+    public static void Nazaj(int i){
+    	Motor.B.setSpeed(i);// 2 RPM 720
+        Motor.C.setSpeed(i);
+        Motor.B.backward();
+        Motor.C.backward();
+    }
+    public static void Zgrabi(){
+    	 Motor.A.rotate(-180);
+    	 Delay.msDelay(1000);
+    	 Motor.A.rotate(180);
+    	 Delay.msDelay(1000);
+         Motor.A.forward();
+         Delay.msDelay(1000);
+        
+    }
+    public static void Odlozi(){
+    	 Motor.A.backward();
+         Delay.msDelay(1000);
+         Motor.A.rotate(-180);
+         Motor.B.setSpeed(720);// 2 RPM 720
+         Motor.C.setSpeed(720);
+         Motor.B.backward();
+         Motor.C.backward();
+    }
+    
 }

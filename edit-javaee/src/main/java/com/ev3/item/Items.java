@@ -96,10 +96,8 @@ public class Items {
     		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
     		return loc;
     	}
-    	else
-    	{
-    	    return null;
-    	}
+
+    	return null;
     }
 
     public boolean EditItem(String id, String title)

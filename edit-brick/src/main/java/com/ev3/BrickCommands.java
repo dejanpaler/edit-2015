@@ -37,7 +37,7 @@ public class BrickCommands extends AbstractReceiveListener {
         	final JsonObject jsonCommand = Json.createReader(new StringReader(json)).readObject();
             System.out.println("Parsed: " + jsonCommand.toString());
             final String command = jsonCommand.getString("command");
-            //WebSockets.sendText("[ev3.brick] Received command " + command, channel, null);
+            //respond to client
             if (command.isEmpty())
                 Log.info("No command given.");
             else if (command.equals("MoveToLocation")) {

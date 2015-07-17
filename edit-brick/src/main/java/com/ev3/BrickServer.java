@@ -114,7 +114,6 @@ public class BrickServer {
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
-
         Log.info("Starting server...");
         final String host = "0.0.0.0";
         Undertow server = Undertow.builder().addHttpListener(8081, host)

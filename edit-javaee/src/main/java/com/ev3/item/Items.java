@@ -55,33 +55,36 @@ public class Items {
     	int rows = 4;
     	int cols = 4;
 
-    	int r = rows/2;
-    	int c = cols/2;
-
-    	for (int i = 1; i <= r; i++)
+    	if (findAllItems().size() != rows * cols)
     	{
-	    	for (int j = 1; j <= c; j++)
-	    	{
-	    		if (CheckFreeLocation(i, -j, direction.down))
-	    		{
-	    			return new Location(i, -j, direction.down);
-	    		}
+        	int r = rows/2;
+        	int c = cols/2;
 
-	    		else if(CheckFreeLocation(i, j, direction.down))
-	    		{
-	    			return new Location(i, j, direction.down);
-	    		}
+        	for (int i = 1; i <= r; i++)
+        	{
+        	    for (int j = 1; j <= c; j++)
+        	    {
+    	    		if (CheckFreeLocation(i, -j, direction.down))
+    	    		{
+    	    			return new Location(i, -j, direction.down);
+    	    		}
 
-	    		else if (CheckFreeLocation(i, -j, direction.up))
-	    		{
-	    			return new Location(i, -j, direction.up);
-	    		}
+    	    		else if(CheckFreeLocation(i, j, direction.down))
+    	    		{
+    	    			return new Location(i, j, direction.down);
+    	    		}
 
-	    		else if (CheckFreeLocation(i, j, direction.up))
-	    		{
-	    			return new Location(i, j, direction.up);
-	    		}
-	    	}
+    	    		else if (CheckFreeLocation(i, -j, direction.up))
+    	    		{
+    	    			return new Location(i, -j, direction.up);
+    	    		}
+
+    	    		else if (CheckFreeLocation(i, j, direction.up))
+    	    		{
+    	    			return new Location(i, j, direction.up);
+    	    		}
+        	    }
+        	}
     	}
 
     	return null;
@@ -137,6 +140,14 @@ public class Items {
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public void ClearDatabase()
+    {
+        if (findAllItems().size() > 0)
+        {
+            em.createQuery("DELETE FROM Item").executeUpdate();
         }
     }
 }

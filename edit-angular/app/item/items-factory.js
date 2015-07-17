@@ -17,7 +17,7 @@
 
     ItemsBase.getAllItems = function () {
       var defer = $q.defer();
-      $http.get('http://10.80.49.6:8080/edit-javaee/items', {
+      $http.get('http://10.80.49.2:8080/edit-javaee/items', {
         cache: 'true'
       }).success(function (data) {
         defer.resolve({items: data});
@@ -30,7 +30,7 @@
 
     ItemsBase.getItem = function (id) {
       var defer = $q.defer();
-      $http.get('http://10.80.49.6:8080/edit-javaee/items/' + id, {
+      $http.get('http://10.80.49.2:8080/edit-javaee/items/' + id, {
         cache: 'true'
       }).success(function (data) {
         defer.resolve({item: data});

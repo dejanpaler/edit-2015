@@ -12,7 +12,8 @@
     .module('item')
     .controller('OrderCtrl', OrderCtrl);
 
-  function OrderCtrl(Cart) {
+  function OrderCtrl($http, Cart) {
+    var i;
     var vm = this;
     vm.ctrlName = 'OrderCtrl';
 
@@ -22,7 +23,7 @@
     };
 
     vm.checkOut = function () {
-      for (i=0; i<Cart.items.length; i++) {
+      for (i=0; i < Cart.items.length; i++) {
         $http.post("http://10.80.49.2:8080/edit-javaee/items/do", {id: Cart.items[i].id, command: "get"})
           .success(function () {
             alert("Success");

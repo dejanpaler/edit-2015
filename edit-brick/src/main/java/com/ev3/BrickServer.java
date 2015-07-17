@@ -33,7 +33,7 @@ public class BrickServer {
     	// wait for exit
     	Thread thread = new Thread(){
             public void run(){
-            	System.out.print("Thread started");
+            	Log.info("Thread started");
             	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
             		System.exit(0);
             	}
@@ -70,10 +70,10 @@ public class BrickServer {
         float threshold = (float)0.25;
         while(true) {
             float[] sample = getSample();
-            System.out.println("N=" + i + " Sample=" + Arrays.toString(sample));
+            Log.info("N=" + i + " Sample=" + Arrays.toString(sample));
             if (sample[0] < threshold)
             {
-            	System.out.println("grem levo");
+            	Log.info("grem levo");
             	lm.setSpeed(540);
             	lm.backward();
             	rm.setSpeed(0);
@@ -81,7 +81,7 @@ public class BrickServer {
             }
             else
             {
-            	System.out.println("grem desno");
+            	Log.info("grem desno");
             	lm.setSpeed(0);
             	lm.stop();
             	rm.setSpeed(540);
@@ -129,7 +129,7 @@ public class BrickServer {
         
         Thread thread = new Thread(){
             public void run(){
-            	System.out.print("Thread started");
+            	Log.info("Thread started");
             	if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
             		System.exit(0);
             	}
@@ -139,7 +139,7 @@ public class BrickServer {
     }
 
     private static void HelloWorld(){
-    	System.out.print("Hello World!");
+    	Log.info("Hello World!");
     }
     private static void MotorForward(){
     	Motor.A.forward();

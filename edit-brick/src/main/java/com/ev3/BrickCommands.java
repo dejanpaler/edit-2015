@@ -1,5 +1,6 @@
 package com.ev3;
 
+import io.undertow.server.session.Session;
 import io.undertow.websockets.core.AbstractReceiveListener;
 import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
@@ -28,7 +29,8 @@ public class BrickCommands extends AbstractReceiveListener {
 
     @Override
     protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
-
+    	
+    	/*
         String msg = message.getData();
         if(msg.equals("terminate")){
             Log.info("Press escape to exit.");
@@ -69,42 +71,65 @@ public class BrickCommands extends AbstractReceiveListener {
 	        Order order = ParseCommand(msg);
 	    	MoveToLocation(order);
         }
+    	*/
     	
-    	//String json = message.getData();
-        //Log.info("Trying to parse JSON:" + json);
+    	String json = message.getData();
+        Log.info("Trying to parse JSON:" + json);
        
-
-        /*
         try {
         	final JsonObject jsonCommand = Json.createReader(new StringReader(json)).readObject();
             System.out.println("Parsed: " + jsonCommand.toString());
             final String command = jsonCommand.getString("command");
-            WebSockets.sendText("[ev3.brick] Received command " + command,
-                    channel, null);
+            //WebSockets.sendText("[ev3.brick] Received command " + command, channel, null);
             if (command.isEmpty())
                 Log.info("No command given.");
             else if (command.equals("MoveToLocation")) {
-                MoveToLocation();
-            } else if (command.equals("MoveHome")) {
-                MoveHome();
-            } else if (command.equals("PickUpItem")) {
-                PickupItem();
-            } else if (command.equals("DropItem")) {
-                DropItem();
-            } else {
-                Log.info("Command " + command + " doesn't exist.");
-            }
-            if (command.equals("Stop")) {
+                final String data = jsonCommand.getString("data");
+                Order order = ParseCommand(data);
+                MoveToLocation(order);
+            } else if (command.equals("terminate")) {
                 Log.info("Press escape to exit.");
                 if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
                     System.exit(0);
                 }
+            } else if (command.equals("control")) {
+            	directControl = true;
+            } else if(directControl){
+            	switch (command){
+            	case "grab":
+            		PickupItem();
+            		break;
+            		
+            	case "drop":
+            		DropItem();
+            		break;
+            		
+            	case "turn right":
+            		Turn("right");
+            		break;
+            		
+            	case "turn left":
+            		Turn("left");
+            		break;
+
+            	case "forward":
+                    final String data = jsonCommand.getString("data");
+                    int howFar = Integer.parseInt(data);
+            		Forward(360);
+            		Delay.msDelay(howFar*1000);
+            		break;
+            		
+            	case "nocontrol":
+            		directControl = false;
+            		break;
+            	}
+            } else {
+                Log.info("Command " + command + " doesn't exist.");
             }
         } catch (JsonException je) {
             System.out.print("Couldn't parse JSON.");
             System.out.print(je.getMessage());
         }
-        */
     }
 
     private Order ParseCommand(String message) {

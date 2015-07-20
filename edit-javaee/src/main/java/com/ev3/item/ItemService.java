@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.ev3.brick.device.BrickClientEndpoint;
 import com.ev3.startup.StartupEvent;
@@ -27,9 +28,6 @@ public class ItemService {
 
     @Inject
     BrickClientEndpoint BC;
-
-    @Inject
-    Items I;
 
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
         /*
@@ -104,7 +102,6 @@ public class ItemService {
 
     @POST
     @Path("/do")
-
     public Response command(String command) {
         System.out.println("Got order");
         try {
@@ -116,7 +113,7 @@ public class ItemService {
                 JsonObject order = Json.createObjectBuilder().add("command", "get").add("data", coords).build();
                 BC.sendCommand(order.toString());
                 return Response.ok(order).build();
-            } else {
+            } else if (jsonCommand.getString("command").equals("put")) {
                 Location location = items.AddItem(jsonCommand.getString("title"));
                 if (location != null) {
                     String data = Integer.toString(location.getCol()) + ";" + Integer.toString(location.getRow()) + ";"
@@ -127,6 +124,14 @@ public class ItemService {
                 } else {
                     return Response.ok("Storage is full").build();
                 }
+            } else if (jsonCommand.getString("command").equals("edit")) {
+                if (items.EditItem(jsonCommand.getString("id"), jsonCommand.getString("title"))) {
+                    return Response.ok("Item edited").build();
+                } else {
+                    return Response.ok("Edit failed").build();
+                }
+            } else {
+                return Response.ok(Status.BAD_REQUEST).build();
             }
 
         } catch (Exception e) {

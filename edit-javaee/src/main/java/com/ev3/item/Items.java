@@ -10,12 +10,12 @@ import javax.persistence.Query;
 
 @Stateless
 public class Items {
-	
+
 	public void findFirstEmptySpace()
 	{
 		Collection<Item> items = findAllItems();
 	}
-	
+
     @PersistenceContext
     private EntityManager em;
 
@@ -37,67 +37,117 @@ public class Items {
         Query q = em.createQuery("SELECT i FROM Item i");
         return q.getResultList();
     }
-    
+
     public boolean CheckFreeLocation(int row, int col, direction dir)
     {
     	String r = Integer.toString(row);
     	String c = Integer.toString(col);
     	String d = Integer.toString(dir.ordinal());
-    	
-    	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");    	
-    	
+
+    	Query q = em.createQuery("SELECT i FROM Item i WHERE coorX = '" + r + "' AND coorY = '" + c + "' AND dir = '" + d + "'");
+
     	return q.getResultList().isEmpty();
     }
-    
+
     public Location GetFreeLocation()
-    {   	
+    {
     	// Hardcoded storage size.
     	int rows = 4;
     	int cols = 4;
-    	
-    	int r = (int)rows/2;
-    	int c = (int)cols/2;
-    	
-    	for (int i = 1; i <= r; i++)
+
+    	if (findAllItems().size() != rows * cols)
     	{
-	    	for (int j = 1; j <= c; j++)
-	    	{	    		
-	    		if (CheckFreeLocation(i, -j, direction.down))
-	    		{
-	    			return new Location(i, -j, direction.down);
-	    		}
-	    		
-	    		else if(CheckFreeLocation(i, j, direction.down))
-	    		{
-	    			return new Location(i, j, direction.down);
-	    		}
-	    		
-	    		else if (CheckFreeLocation(i, -j, direction.up))
-	    		{
-	    			return new Location(i, -j, direction.up);
-	    		}
-	    		
-	    		else if (CheckFreeLocation(i, j, direction.up))
-	    		{
-	    			return new Location(i, j, direction.up);
-	    		}
-	    	}
+        	int r = rows/2;
+        	int c = cols/2;
+
+        	for (int i = 1; i <= r; i++)
+        	{
+        	    for (int j = 1; j <= c; j++)
+        	    {
+    	    		if (CheckFreeLocation(i, -j, direction.down))
+    	    		{
+    	    			return new Location(i, -j, direction.down);
+    	    		}
+
+    	    		else if(CheckFreeLocation(i, j, direction.down))
+    	    		{
+    	    			return new Location(i, j, direction.down);
+    	    		}
+
+    	    		else if (CheckFreeLocation(i, -j, direction.up))
+    	    		{
+    	    			return new Location(i, -j, direction.up);
+    	    		}
+
+    	    		else if (CheckFreeLocation(i, j, direction.up))
+    	    		{
+    	    			return new Location(i, j, direction.up);
+    	    		}
+        	    }
+        	}
     	}
-    	
+
     	return null;
     }
-    
-    public void AddItem(String title) throws Exception
-    {    	
+
+    public Location AddItem(String title)
+    {
     	Location loc = GetFreeLocation();
-    	
+
     	if (loc != null)
-    	{    	
-    		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
-    	}
-    	else
     	{
-    		throw new Exception("No free space in storage!");
+    		createItem(title, loc.getRow(), loc.getCol(), loc.getDirection());
+    		return loc;
     	}
+
+    	return null;
+    }
+
+    public boolean EditItem(String id, String title)
+    {
+        try
+        {
+            Item item = findItem(id);
+
+            if (item != null)
+            {
+                item.setTitle(title);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void RemoveItem(String id)
+    {
+        try
+        {
+            Item item = findItem(id);
+
+            if (item != null)
+            {
+                em.remove(item);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void ClearDatabase()
+    {
+        if (findAllItems().size() > 0)
+        {
+            em.createQuery("DELETE FROM Item").executeUpdate();
+        }
     }
 }

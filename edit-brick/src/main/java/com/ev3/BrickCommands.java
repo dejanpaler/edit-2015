@@ -98,8 +98,8 @@ public class BrickCommands extends AbstractReceiveListener {
         }
     }
 
-
-
+    
+    
     private Order ParseCommand(String message) {
         int i = message.indexOf(";");
         int j = message.indexOf(";", i+1);
@@ -109,10 +109,10 @@ public class BrickCommands extends AbstractReceiveListener {
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
-
-    private static void find_path(int x, int y, boolean go_left, boolean take_from)
+    
+    private static void find_path(int x, int y, boolean go_left, boolean take_from) 
     {
-
+        
         lm.setSpeed(420);
         rm.setSpeed(420);
 
@@ -123,15 +123,15 @@ public class BrickCommands extends AbstractReceiveListener {
         int WHITE = 6;
         int BLACK = 7;
         int RED = 0;
-
+        
         /*
          * === COLORS ===
          * 6 - WHITE
          * 7 - BLACK/VERY DARK SOMETHING
          * 0 - RED
          */
-
-        while (true)
+        
+        while (true) 
         {
             colorID = colorSensor.getColorID(); // do a color reading
 
@@ -176,7 +176,7 @@ public class BrickCommands extends AbstractReceiveListener {
                     }
                 }
             }
-            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
+            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)    
             {
                 System.out.println("found an intersection!");
                 if ((current_y - Math.abs(current_x) < y - 1) && current_x != x) // then march on!
@@ -184,28 +184,28 @@ public class BrickCommands extends AbstractReceiveListener {
                     System.out.println("goin fwd");
                     current_y++;
                     ForwardIntersection();
-                }
+                } 
                 else if (current_x == x && go_left) // then make the final turn and end the loop
                 {
                     System.out.println("final left turn");
                     rotateR();
                     Sound.beepSequence();
                     break;
-                }
+                } 
                 else if (current_x == x && !go_left) // then make the final turn and end the loop
                 {
                     System.out.println("final right turn");
                     rotateL();
                     Sound.beepSequence();
                     break;
-                }
+                } 
                 else if (x < 0) // then turn left
                 {
                     System.out.println("goin left");
                     current_x--;
                     rotateL();
-
-                }
+                    
+                } 
                 else if (x > 0) // then turn right
                 {
                     System.out.println("goin right");
@@ -222,7 +222,7 @@ public class BrickCommands extends AbstractReceiveListener {
         }
     }
 
-    private static void rotateL()
+    private static void rotateL() 
     {
         lm.stop(true);
         rm.stop(true);
@@ -230,7 +230,7 @@ public class BrickCommands extends AbstractReceiveListener {
         lm.rotate(-620);
     }
 
-    private static void rotateR()
+    private static void rotateR() 
     {
         lm.stop(true);
         rm.stop(true);
@@ -238,7 +238,7 @@ public class BrickCommands extends AbstractReceiveListener {
         rm.rotate(-620);
     }
 
-    private static void ForwardIntersection()
+    private static void ForwardIntersection() 
     {
         lm.stop(true);
         rm.stop();

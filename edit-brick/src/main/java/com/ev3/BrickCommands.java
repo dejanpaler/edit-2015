@@ -172,12 +172,12 @@ public class BrickCommands extends AbstractReceiveListener {
                     if (go_left)
                     {
                         System.out.println("final left turn");
-                        rotateL();
+                        rotateR();
                     }
                     else
                     {
                         System.out.println("final right turn");
-                        rotateR();
+                        rotateL();
                     }
                     Sound.beepSequence();
                     objectGrabbingProcedure();

@@ -1,24 +1,26 @@
 <h2>Add Item</h2>
-<div class="col-md-4">
-  <input class="form-control input" ng-model="additem" placeholder="Add item...">
-</div>
-<div class="col-md-offset-1 col-md-2">
-  <button class="btn btn-success"  ng-click="vm.addItem(additem)">Add Item</button>
+<div class="row">
+  <div class="col-md-4">
+    <input class="form-control input" ng-model="additem" placeholder="Add item...">
+  </div>
+  <div class="col-md-offset-1 col-md-2">
+    <button class="btn btn-success"  ng-click="vm.addItem(additem)">Add Item</button>
+  </div>
 </div>
 <br />
 <br />
 <hr />
 <br />
 <br />
-<h2>Remove Items</h2>
+<h2>Edit Items</h2>
 <br />
 <div ng-repeat="item in vm.itemList | filter:search">
   <div class="row">
     <div class="col-md-4">
-      <p class="item-add" style="margin-top: 20px">{{item.title}}</p>
+      <input class="form-control input" type="text" style="margin-top: 20px" value="{{item.title}}" ng-model="item.title">
     </div>
     <div class="col-md-offset-1 col-md-2">
-      <button class="btn btn-danger" style="margin-top: 20px" ng-click="vm.removeItem(item.id)">Remove Item</button>
+      <button class="btn btn-danger" style="margin-top: 20px" ng-click="vm.editItem(item.id, item.title)">Edit Item</button>
     </div>
   </div>
   <br />

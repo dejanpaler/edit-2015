@@ -15,7 +15,7 @@
   function DomaCtrl($scope, $http) {
     $scope.name = "ROBOT";
     $scope.sen = function(){
-      $http.post("http://10.80.49.2:8080/edit-javaee/items/go", {param:'2,0'}).
+      $http.post("http://10.80.49.2:8080/edit-javaee/items/do", {"id": "3sfLKQMqRAm3aD080IfSUw==", "command": "get"}).
         success(function() {
           $scope.name = "USPEH";
         }).

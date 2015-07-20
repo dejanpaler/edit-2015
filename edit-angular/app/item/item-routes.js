@@ -24,6 +24,12 @@
         templateUrl: 'item/checkout.tpl.html',
         controller: 'OrderCtrl',
         controllerAs: 'vm'
+      })
+      .state('add-item', {
+        url: '/add-item',
+        templateUrl: 'item/add-item.tpl.html',
+        controller: 'AddItemCtrl',
+        controllerAs: 'vm'
       });
   }
 }());

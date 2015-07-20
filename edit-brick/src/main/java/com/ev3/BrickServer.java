@@ -35,7 +35,8 @@ public class BrickServer {
             }
         };
         thread.start();
-        startWebSocketServer();
+        //startWebSocketServer();
+        BrickCommands.find_path(2, 1, true, true);
     }
 
     private static float[] getSample() {

@@ -1,19 +1,19 @@
 /*global describe, beforeEach, it, expect, inject, module*/
 'use strict';
 
-describe('produkts', function () {
+describe('products', function () {
   var scope
     , element;
 
-  beforeEach(module('home', 'home/produkts-directive.tpl.html'));
+  beforeEach(module('item', 'item/products-directive.tpl.html'));
 
   beforeEach(inject(function ($compile, $rootScope) {
     scope = $rootScope.$new();
-    element = $compile(angular.element('<produkts></produkts>'))(scope);
+    element = $compile(angular.element('<products></products>'))(scope);
   }));
 
   it('should have correct text', function () {
     scope.$apply();
-    expect(element.isolateScope().produkts.name).toEqual('produkts');
+    expect(element.isolateScope().products.name).toEqual('products');
   });
 });

@@ -5,23 +5,22 @@
 			<tr>
 				<td width="5%"><strong>#</strong></td>
 				<td><strong>Title</strong></td>
-				<td width="15%"><strong>Price</strong></td>
+        <td width="15%"></td>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="item in vm.cart">
-				<td>{{$index}}</td>
+				<td>{{$index+1}}</td>
 				<td>{{item.title}}</td>
-				<td>{{(Math.rand() * 200)}}</td>
+        <td><button class="btn btn-danger" ng-click="vm.removeFrom(item.id)">Remove</button></td>
 			</tr>
 		</tbody>
 	</table>
 	<div class="row">
 		<div class="col-md-3 col-md-offset-9">
 			<button class="btn btn-warning" ui-sref="home">Cancel</button>
-			<button class="btn btn-primary" ng-click="vm.processOrder()">Check out</button>
+			<button class="btn btn-primary" ng-click="vm.checkOut()">Check out</button>
 		</div>
 	</div>
 </div>
 <div ng-if="vm.cart.length <= 0" class="alert alert-warning">Your cart is empty. Please add items to check out.</div>
-{{ vm.cart }}

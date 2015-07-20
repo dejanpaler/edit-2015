@@ -1,0 +1,22 @@
+<div class="col-md-4">
+  <input ng-model="search.name" class="form-control input" placeholder="Search...">
+</div>
+<br />
+<br />
+<br />
+<br />
+<div ng-repeat="item in itemList | filter:search">
+  <div class="row">
+    <div class="col-md-4">
+      <img ng-src="http://www.coinbuzz.com/wp-content/uploads/2014/08/dogecoin.jpg" width="100px" alt="The image is broken." />
+      <a href="/#/order/{{item.id}}" class="item-title" ng-click="sendId(item.id)" ng-bind="item.title"></a>
+    </div>
+    <div class="col-md-4" ng-if="!isInCart(item.id)">
+      <button class="btn btn-success" style="margin-top: 20px" ng-click="onAddCart(item.id)">Add cart</button>
+    </div>
+    <div class="col-md-4" ng-if="isInCart(item.id)">
+      <button class="btn btn-danger" style="margin-top: 20px" ng-click="onAddCart(item.id)">Remove from cart</button>
+    </div>
+  </div>
+  <br />
+</div>

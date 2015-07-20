@@ -27,23 +27,11 @@
     });
 
     vm.addItem = function (title) {
-      $http.post("http://10.80.49.2:8080/edit-javaee/items/do", {"id": title, "command": "get"})
-        .success(function(){
-          alert("Success");
-        })
-        .error(function(){
-          alert("Error");
-        });
+      $http.post('http://10.80.49.2:8080/edit-javaee/items/put', {title: title});
     };
 
-    vm.removeItem = function (id) {
-      $http.post("http://10.80.49.2:8080/edit-javaee/items/do", {"id": id, "command": "get"})
-        .success(function(){
-          alert("Success");
-        })
-        .error(function(){
-          alert("Error");
-        });
+    vm.editItem = function (id, title) {
+      $http.post('http://10.80.49.2:8080/edit-javaee/items/edit', {id: id, title: title});
     };
   }
 }());

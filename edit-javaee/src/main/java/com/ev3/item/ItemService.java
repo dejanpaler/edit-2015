@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.ev3.brick.device.BrickClientEndpoint;
 import com.ev3.startup.StartupEvent;
@@ -28,25 +29,11 @@ public class ItemService {
     @Inject
     BrickClientEndpoint BC;
 
-    @Inject
-    Items I;
-
     public void createSampleTodoItems(@Observes StartupEvent startupEvent) {
-        /*
-         * int i = 20; for (int j = 1; j <= i; j++) { String title = "Item #" +
-         * j; items.createItem(title); }
-         */
-
-        // items.createItem(title)
-
-        items.createItem("prvi", 0, 0, direction.up);
-        items.createItem("drugi", 4, -2, direction.up);
-        items.createItem("tretji", 3, 7, direction.down);
-
-        boolean a = items.CheckFreeLocation(0, 0, direction.up);
-        boolean b = items.CheckFreeLocation(0, 0, direction.down);
-
-        System.out.println("REZ: " + a + " " + b);
+        /*items.ClearDatabase();
+        items.createItem("prvi", 1, -1, direction.up);
+        items.createItem("drugi", 2, 1, direction.up);
+        items.createItem("tretji", 1, -1, direction.down);*/
     }
 
     @GET
@@ -103,36 +90,89 @@ public class ItemService {
     }
 
     @POST
-    @Path("/do")
-
-    public Response command(String command) {
-        System.out.println("Got order");
-        try {
+    @Path("/get")
+    public Response commandGet(String command)
+    {
+        try
+        {
             final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
-            if (jsonCommand.getString("command").equals("get")) {
-                Item item = items.findItem(jsonCommand.getString("id"));
+
+            Item item = items.findItem(jsonCommand.getString("id"));
+
+            if (item != null)
+            {
                 String coords = Integer.toString(item.getCoorX()) + ";" + Integer.toString(item.getCoorY()) + ";"
                         + Integer.toString(item.getDirection().ordinal());
                 JsonObject order = Json.createObjectBuilder().add("command", "get").add("data", coords).build();
                 BC.sendCommand(order.toString());
+
                 return Response.ok(order).build();
-            } else {
-                Location location = items.AddItem(jsonCommand.getString("title"));
-                if (location != null) {
-                    String data = Integer.toString(location.getCol()) + ";" + Integer.toString(location.getRow()) + ";"
-                            + Integer.toString(location.getDirection().ordinal());
-                    JsonObject order = Json.createObjectBuilder().add("command", "put").add("data", data).build();
-                    BC.sendCommand(order.toString());
-                    return Response.ok("Item: \"" + jsonCommand.getString("title") + "\" added to storage.").build();
-                } else {
-                    return Response.ok("Storage is full").build();
-                }
             }
 
-        } catch (Exception e) {
+            else
+            {
+                return Response.ok(Status.BAD_REQUEST).build();
+            }
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return Response.ok(e.getStackTrace()).build();
         }
+    }
 
+    @POST
+    @Path("/put")
+    public Response commandPut(String command)
+    {
+        try
+        {
+            final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
+
+            Location location = items.AddItem(jsonCommand.getString("title"));
+
+            if (location != null)
+            {
+                String data = Integer.toString(location.getCol()) + ";" + Integer.toString(location.getRow()) + ";"
+                        + Integer.toString(location.getDirection().ordinal());
+                JsonObject order = Json.createObjectBuilder().add("command", "put").add("data", data).build();
+                BC.sendCommand(order.toString());
+
+                return Response.ok("Item: \"" + jsonCommand.getString("title") + "\" added to storage.").build();
+            }
+            else
+            {
+                return Response.ok("Storage is full").build();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return Response.ok(e.getStackTrace()).build();
+        }
+    }
+
+    @POST
+    @Path("/edit")
+    public Response commandEdit(String command)
+    {
+        try
+        {
+            final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
+
+            if (items.EditItem(jsonCommand.getString("id"), jsonCommand.getString("title")))
+            {
+                return Response.ok("Item edited").build();
+            }
+            else
+            {
+                return Response.ok("Edit failed").build();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return Response.ok(e.getStackTrace()).build();
+        }
     }
 }

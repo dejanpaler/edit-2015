@@ -13,13 +13,22 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.ev3.item.Items;
+
 @Singleton
 @ServerEndpoint("/brick")
 public class BrickConnection {
 
+    private String currentId;
     @Inject
     AngularConnection AC;
+    @Inject
+    Items items;
     private Session session;
+
+    public void setId(String id) {
+        currentId = id;
+    }
 
     /**
      * @OnOpen allows us to intercept the creation of a new session. The session
@@ -55,9 +64,20 @@ public class BrickConnection {
         System.out.println("Message from " + session.getId() + ": " + message);
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(message)).readObject();
-            AC.sendCommand(jsonCommand.toString());
+            if (jsonCommand.getString("command").equals("end")) {
+                AC.sendCommand(jsonCommand.toString());
+                try {
+                    items.RemoveItem(currentId);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                AC.sendCommand(jsonCommand.toString());
+            }
 
         } catch (Exception ex) {
+
             ex.printStackTrace();
         }
     }

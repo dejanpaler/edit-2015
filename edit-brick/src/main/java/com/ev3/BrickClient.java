@@ -1,15 +1,19 @@
 package com.ev3;
 
-import io.undertow.server.session.Session;
-import io.undertow.websockets.core.AbstractReceiveListener;
-import io.undertow.websockets.core.BufferedTextMessage;
-import io.undertow.websockets.core.WebSocketChannel;
-import io.undertow.websockets.core.WebSockets;
+import java.io.IOException;
+import java.util.Queue;
 
-import lejos.hardware.Sound;
-import lejos.hardware.Button;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.MessageHandler;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+
 import lejos.hardware.motor.*;
 import lejos.hardware.port.MotorPort;
+
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -28,9 +32,14 @@ class Order
     public int x, y, side, getItem;
 }
 
-public class BrickCommands extends AbstractReceiveListener {
+@ClientEndpoint
+public class BrickClient {
 
-    private WebSocketChannel channel;
+    //connect to brick bluetooth host
+    //private static final String uri = "ws://10.0.1.0:8081/brick";
+
+    //private static final String uri = "ws://10.80.49.2:8081/brick";
+
     public Boolean directControl = false;
     private static Port colorSensorPort = SensorPort.S2;
     private static EV3ColorSensor colorSensor = new EV3ColorSensor(colorSensorPort);
@@ -38,39 +47,86 @@ public class BrickCommands extends AbstractReceiveListener {
     private static RegulatedMotor rm = new EV3LargeRegulatedMotor(MotorPort.C);
     private static RegulatedMotor gripper = new EV3MediumRegulatedMotor(MotorPort.A);
     private static EV3TouchSensor touchSensor = new EV3TouchSensor(SensorPort.S1);
+    private Session session;
+    private Queue<String> commandQueue;
 
-    @Override
-    protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
+    /*
+    @PostConstruct
+    public void connectBrickEndpoint() {
+        final WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+        try {
+            webSocketContainer.connectToServer(this, URI.create(uri));
+        } catch (DeploymentException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 
-        String json = message.getData();
-        Log.info("Trying to parse JSON:" + json);
+    @OnOpen
+    public void onOpen(Session session) {
+        this.session = session;
+        Log.info("Connected to ws://10.0.1.12:8080/edit-javaee/brick");
+    }
+    public void addMessageHandler(MessageHandler.Whole<String> handler) {
+        this.session.addMessageHandler(handler);
+    }
+    public void sendCommand(String command) throws IOException {
+        this.session.getBasicRemote().sendText(command);
+    }
+    public void InformServer(String message, int x, int y, int side) throws IOException {
+        CommandWrapper command;
+        if(x == 0 || y == 0){
+            command = new CommandWrapper(message,"");
+        }else{
+            command = new CommandWrapper(message, x + ", " + y + ", " + side);
+        }
+        JsonObject jsonCommand = Json.createObjectBuilder()
+                .add("command", command.getCommand())
+                .add("data", command.getData()).build();
+        sendCommand(jsonCommand.toString());
 
+    }
+    public void InformServer(String message) throws IOException {
+        InformServer(message, 0, 0, 0);
+    }
+
+    @OnMessage
+    public void onMessage(String json, Session session) throws IOException {
+        this.session = session;
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(json)).readObject();
             System.out.println("Parsed: " + jsonCommand.toString());
             final String command = jsonCommand.getString("command");
-            //respond to client
             if (command.isEmpty())
                 Log.info("No command given.");
             else if (command.equals("get")) {
                 final String data = jsonCommand.getString("data");
                 Order order = ParseCommand(data);
-                find_path(order.x, order.y, order.side != 0 ? true : false, order.getItem != 0 ? true : false); // go fetch/place the item
+                order.getItem = 1;
+                InformServer("start");
+                find_path(order.x, order.y, order.side != 0 ? true : false, order.getItem != 0 ? true : false); // go fetch the item
+            } else if (command.equals("put")) {
+                final String data = jsonCommand.getString("data");
+                Order order = ParseCommand(data);
+                order.getItem = 0;
+                InformServer("start");
+                find_path(order.x, order.y, order.side != 0 ? true : false, order.getItem != 0 ? true : false); // go place the item
             } else if (command.equals("terminate")) {
                 Log.info("Press escape to exit.");
                 if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
                     System.exit(0);
                 }
             } else if (command.equals("control")) {
-                directControl = true;
-            } else if(directControl){
+                //directControl = true;
+            }
+            /*else if(directControl){
                 switch (command){
                 case "grab":
                     PickupItem();
                     break;
 
                 case "drop":
-                    dropItem();
+                    DropItem();
                     break;
 
                 case "turn right":
@@ -92,17 +148,15 @@ public class BrickCommands extends AbstractReceiveListener {
                     directControl = false;
                     break;
                 }
-            } else {
+            }*/
+            else {
                 Log.info("Command " + command + " doesn't exist.");
             }
         } catch (JsonException je) {
-            System.out.print("Couldn't parse JSON.");
-            System.out.print(je.getMessage());
+            System.out.print(json);
         }
     }
 
-    
-    
     private Order ParseCommand(String message) {
         int i = message.indexOf(";");
         int j = message.indexOf(";", i+1);
@@ -112,10 +166,9 @@ public class BrickCommands extends AbstractReceiveListener {
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
-    
-    public static void find_path(int x, int y, boolean go_left, boolean take_from) 
+    public void find_path(int x, int y, boolean go_left, boolean take_from) throws IOException
     {
-        
+
         lm.setSpeed(420);
         rm.setSpeed(420);
 
@@ -126,16 +179,16 @@ public class BrickCommands extends AbstractReceiveListener {
         int WHITE = 6;
         int BLACK = 7;
         int RED = 0;
-        
+
         /*
          * === COLORS ===
          * 6 - WHITE
          * 7 - BLACK/VERY DARK SOMETHING
          * 0 - RED
          */
-        
+
         // GO TO OBJECT
-        while (true) 
+        while (true)
         {
             colorID = colorSensor.getColorID(); // do a color reading
 
@@ -143,9 +196,10 @@ public class BrickCommands extends AbstractReceiveListener {
             {
                 find_line_again();
             }
-            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)    
+            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
                 System.out.println("found an intersection!");
+                InformServer("location", current_x, current_y, go_left ? 1 : 0);
                 if (current_y != y) // if we still need to go up
                 {
                     System.out.println("goin fwd");
@@ -181,6 +235,7 @@ public class BrickCommands extends AbstractReceiveListener {
                     }
                     Sound.beepSequence();
                     objectGrabbingProcedure();
+                    InformServer("PickedUp");
                     rotateBackOnLine(!go_left);
                     break;
                 }
@@ -201,9 +256,9 @@ public class BrickCommands extends AbstractReceiveListener {
                 rm.backward();
             }
         }
-        
+
         // GO BACK TO START POINT
-        
+
         current_x = x < 0 ? x + 1 : x - 1;
         current_y = y;
         while (true)
@@ -214,10 +269,11 @@ public class BrickCommands extends AbstractReceiveListener {
             {
                 find_line_again();
             }
-            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)    
+            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
-                
+
                 System.out.println("found an intersection!");
+                InformServer("location", current_x, current_y, go_left ? 1 : 0);
                 if (current_x != 0)
                 {
                     System.out.println("goin fwd");
@@ -250,6 +306,7 @@ public class BrickCommands extends AbstractReceiveListener {
                     lm.stop();
                     dropItem();
                     rotate180();
+                    InformServer("end");
                     //ForwardIntersection();
                     break;
                 }
@@ -261,8 +318,6 @@ public class BrickCommands extends AbstractReceiveListener {
                 rm.backward();
             }
         }
-        
-        
     }
 
     private static void find_line_again()
@@ -275,7 +330,7 @@ public class BrickCommands extends AbstractReceiveListener {
         rm.rotate(-100, true);
         lm.rotate(100, true);
         int colorID;
-        
+
         while (rm.isMoving() && lm.isMoving()) {
             // sample = getSample();
             colorID = colorSensor.getColorID();
@@ -307,8 +362,8 @@ public class BrickCommands extends AbstractReceiveListener {
             }
         }
     }
-    
-    private static void rotateL() 
+
+    private static void rotateL()
     {
         lm.stop(true);
         rm.stop(true);
@@ -316,7 +371,7 @@ public class BrickCommands extends AbstractReceiveListener {
         lm.rotate(-620);
     }
 
-    private static void rotateR() 
+    private static void rotateR()
     {
         lm.stop(true);
         rm.stop(true);
@@ -329,8 +384,8 @@ public class BrickCommands extends AbstractReceiveListener {
         lm.rotate(840, true);
         rm.rotate(840);
     }
-    
-    private static void ForwardIntersection() 
+
+    private static void ForwardIntersection()
     {
         lm.stop(true);
         rm.stop();
@@ -344,11 +399,11 @@ public class BrickCommands extends AbstractReceiveListener {
         rm.stop();
         lm.setSpeed(100);
         rm.setSpeed(100);
-        
+
         lm.forward();
         rm.forward();
-        
-        while (true) 
+
+        while (true)
         {
             int sampleSize = touchSensor.sampleSize();
             float[] sample = new float[sampleSize];
@@ -361,13 +416,13 @@ public class BrickCommands extends AbstractReceiveListener {
                 break;
             }
         }
-        
+
         lm.stop(true);
         rm.stop();
         lm.setSpeed(420);
         rm.setSpeed(420);
     }
-    
+
     public static void grabItem()
     {
         gripper.rotate(180);
@@ -375,9 +430,9 @@ public class BrickCommands extends AbstractReceiveListener {
         gripper.forward();
         Delay.msDelay(1000);
     }
-    
-    
-    private void PickupItem() 
+
+
+    private void PickupItem()
     {
         Log.info("Picking up item");
         //move forward
@@ -407,7 +462,7 @@ public class BrickCommands extends AbstractReceiveListener {
         if(turn_left)
             lm.rotate(-840); //rotiraj 90° levo
         else
-            rm.rotate(-840); //rotiraj 90° Desno 
+            rm.rotate(-840); //rotiraj 90° Desno
     }
 
     private void Turn(String direction){
@@ -420,40 +475,8 @@ public class BrickCommands extends AbstractReceiveListener {
         else {
             //turn around
         }
+    }
 
-    }
-    private static void ForwardTest(){
-        System.out.print("Press Back, when you want to stop!");
-        Motor.B.forward();
-        Motor.C.forward();
-        while(true)
-        {
-            if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
-                Motor.B.stop();
-                Motor.C.stop();
-                break;
-            }
-        }
-    }
-    private static void Align(){
-        Motor.A.backward();
-        Delay.msDelay(1000);
-        Motor.A.stop();
-    }
-    public static void Forward(int i){
-        Motor.B.setSpeed(i);// 2 RPM 720
-        Motor.C.setSpeed(i);
-        Motor.B.forward();
-        Motor.C.forward();
-    }
-    public static void Backward(int i){
-        Motor.B.setSpeed(i);// 2 RPM 720
-        Motor.C.setSpeed(i);
-        Motor.B.backward();
-        Motor.C.backward();
-    }
-    public static void Stop(){
-        Motor.B.stop();
-        Motor.C.stop();
-    }
 }
+
+

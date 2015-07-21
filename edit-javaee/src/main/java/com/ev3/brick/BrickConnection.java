@@ -1,8 +1,12 @@
 package com.ev3.brick;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -13,6 +17,8 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/brick")
 public class BrickConnection {
 
+    @Inject
+    AngularConnection AC;
     private Session session;
 
     /**
@@ -23,7 +29,7 @@ public class BrickConnection {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        System.out.println(session.getId() + " has opened a connection");
+        System.out.println(session.getId() + " has opened a brick connection");
         try {
             session.getBasicRemote().sendText("Connection Established");
         } catch (IOException ex) {
@@ -48,8 +54,22 @@ public class BrickConnection {
     public void onMessage(String message, Session session) {
         System.out.println("Message from " + session.getId() + ": " + message);
         try {
-            session.getBasicRemote().sendText(message);
-        } catch (IOException ex) {
+            final JsonObject jsonCommand = Json.createReader(new StringReader(message)).readObject();
+            if (jsonCommand.getString("command").equals("location")) {
+                AC.sendCommand(jsonCommand.getString("data"));
+            } else if (jsonCommand.getString("command").equals("start")) {
+                AC.sendCommand("Order fetch started.");
+            } else if (jsonCommand.getString("command").equals("end")) {
+                AC.sendCommand("Order done.");
+            } else if (jsonCommand.getString("command").equals("pickedUp")) {
+                AC.sendCommand("Item picked up.");
+            } else if (jsonCommand.getString("command").equals("error")) {
+                AC.sendCommand(jsonCommand.getString("data"));
+            } else {
+                AC.sendCommand("Robot send a unknown command.");
+            }
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

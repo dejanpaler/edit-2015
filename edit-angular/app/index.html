@@ -1,62 +1,66 @@
 <!DOCTYPE html>
 <html lang='en' data-ng-app='editAngular'>
-  <head>
-    <title>edit-angular</title>
-    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
-    <!-- inject:head:js -->
-    <!-- endinject -->
-    <!-- inject:html -->
-    <!-- endinject -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- inject:css -->
-    <!-- endinject -->
-  </head>
-  <body>
-    <div class='navbar navbar-inverse' role='navigation' data-bs-navbar data-bs-collapse data-start-collapsed='true'>
-      <div class='container'>
-        <div class='navbar-header'>
-          <button class='navbar-toggle collapsed' type='button' data-bs-collapse-toggle>
-          <span class='sr-only'>Toggle Navigation</span>
-          <span class='icon-bar'></span>
-          <span class='icon-bar'></span>
-          <span class='icon-bar'></span>
-          </button>
-          <a class='navbar-brand' href='#/'>EdIT</a>
-        </div>
-        <div class='navbar-collapse collapse' data-bs-collapse-target>
-          <ul class='nav navbar-nav'>
-            <li data-ui-sref-active='active'>
-              <a data-ui-sref='home'>Home</a>
-            </li>
-            <li data-ui-sref-active='active'>
-              <a ui-sref='add-item'>Add/Remove Items</a>
-            </li>
-            <li data-ui-sref-active='active'>
-              <a ui-sref='items'>Items</a>
-            </li>
-            <li data-ui-sref-active='active'>
-              <a ui-sref='map'>Map</a>
-            </li>
-          </ul>
-          <div class="dropdown btn-group navbar-right" ng-controller="CartCtrl as vm">
-            <button class="btn btn-success cart-toggle" data-ui-sref="order"><span class="glyphicon glyphicon-shopping-cart"></span></button>
-            <button type="button" class="cart-count btn-success btn btn-disabled" data-toggle="dropdown">{{vm.cart.length}}</button>
-            <ul class="dropdown-menu" ng-if="vm.cart.length > 0">
-              <li ng-repeat="item in vm.cart"><a href="#">{{item.title}}</a></li>
-              <li><a data-ui-sref="order">Check out</a></li>
-            </ul>
-          </div>
-        </div>
+<head>
+  <title>D0-G3bot shop</title>
+  <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+  <!-- inject:head:js -->
+  <!-- endinject -->
+  <!-- inject:html -->
+  <!-- endinject -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- inject:css -->
+  <!-- endinject -->
+</head>
+<body>
+
+<div class='navbar navbar-inverse' role='navigation' data-bs-navbar data-bs-collapse data-start-collapsed='true'>
+
+  <div class='container padding2'>
+
+    <div class='navbar-header'>
+      <button class='navbar-toggle collapsed' type='button' data-bs-collapse-toggle>
+        <span class='sr-only'>Toggle Navigation</span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+      </button>
+      <a class='navbar-brand' href='#/'>EdIT</a>
+    </div>
+    <div class='navbar-collapse collapse' data-bs-collapse-target>
+      <ul class='nav navbar-nav'>
+        <li><img src="/images/d0g3-head.png" alt="D0-G3" class="padding3" height="62px"></li>
+        <li data-ui-sref-active='active'>
+          <a data-ui-sref='home'>Home</a>
+        </li>
+        <li data-ui-sref-active='active'>
+          <a ui-sref='add-item'>Add/Remove Items</a>
+        </li>
+        <li data-ui-sref-active='active'>
+          <a ui-sref='items'>Items</a>
+        </li>
+        <li data-ui-sref-active='active'>
+          <a ui-sref='map'>Map</a>
+        </li>
+      </ul>
+      <div class="dropdown btn-group navbar-right" ng-controller="CartCtrl as vm">
+        <button class="btn btn-success cart-toggle" data-ui-sref="order"><span class="glyphicon glyphicon-shopping-cart"></span></button>
+        <button type="button" class="cart-count btn-success btn btn-disabled" data-toggle="dropdown">{{vm.cart.length}}</button>
+        <ul class="dropdown-menu" ng-if="vm.cart.length > 0">
+          <li ng-repeat="item in vm.cart"><a href="#">{{item.title}}</a></li>
+          <li><a data-ui-sref="order">Checkout</a></li>
+        </ul>
       </div>
     </div>
-    <div class='container'>
-      <div data-ui-view>
-      </div>
-    </div>
-    <!-- bower:js -->
-    <!-- endbower -->
-    <!-- inject:js -->
-    <!-- endinject -->
-  </body>
+  </div>
+</div>
+<div class='container'>
+  <div data-ui-view>
+  </div>
+</div>
+<!-- bower:js -->
+<!-- endbower -->
+<!-- inject:js -->
+<!-- endinject -->
+</body>
 </html>

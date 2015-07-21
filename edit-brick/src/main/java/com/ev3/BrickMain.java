@@ -26,6 +26,8 @@ public class BrickMain {
         } catch (DeploymentException | IOException e) {
             e.printStackTrace();
         }
+        Log.info("Connected to " + uri);
+
         BrickMain main = new BrickMain();
         main.onKeyTouchExit();
     }

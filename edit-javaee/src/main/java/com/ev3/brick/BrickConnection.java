@@ -13,13 +13,22 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.ev3.item.Items;
+
 @Singleton
 @ServerEndpoint("/brick")
 public class BrickConnection {
 
+    private String currentId;
     @Inject
     AngularConnection AC;
+    @Inject
+    Items items;
     private Session session;
+
+    public void setId(String id) {
+        currentId = id;
+    }
 
     /**
      * @OnOpen allows us to intercept the creation of a new session. The session
@@ -55,21 +64,20 @@ public class BrickConnection {
         System.out.println("Message from " + session.getId() + ": " + message);
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(message)).readObject();
-            if (jsonCommand.getString("command").equals("location")) {
-                AC.sendCommand(jsonCommand.getString("data"));
-            } else if (jsonCommand.getString("command").equals("start")) {
-                AC.sendCommand("Order fetch started.");
-            } else if (jsonCommand.getString("command").equals("end")) {
-                AC.sendCommand("Order done.");
-            } else if (jsonCommand.getString("command").equals("pickedUp")) {
-                AC.sendCommand("Item picked up.");
-            } else if (jsonCommand.getString("command").equals("error")) {
-                AC.sendCommand(jsonCommand.getString("data"));
+            if (jsonCommand.getString("command").equals("end")) {
+                AC.sendCommand(jsonCommand.toString());
+                try {
+                    items.RemoveItem(currentId);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             } else {
-                AC.sendCommand("Robot send a unknown command.");
+                AC.sendCommand(jsonCommand.toString());
             }
 
         } catch (Exception ex) {
+
             ex.printStackTrace();
         }
     }

@@ -101,8 +101,8 @@ public class BrickCommands extends AbstractReceiveListener {
         }
     }
 
-    
-    
+
+
     private Order ParseCommand(String message) {
         int i = message.indexOf(";");
         int j = message.indexOf(";", i+1);
@@ -112,10 +112,10 @@ public class BrickCommands extends AbstractReceiveListener {
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
-    
-    public static void find_path(int x, int y, boolean go_left, boolean take_from) 
+
+    public static void find_path(int x, int y, boolean go_left, boolean take_from)
     {
-        
+
         lm.setSpeed(420);
         rm.setSpeed(420);
 
@@ -126,16 +126,16 @@ public class BrickCommands extends AbstractReceiveListener {
         int WHITE = 6;
         int BLACK = 7;
         int RED = 0;
-        
+
         /*
          * === COLORS ===
          * 6 - WHITE
          * 7 - BLACK/VERY DARK SOMETHING
          * 0 - RED
          */
-        
+
         // GO TO OBJECT
-        while (true) 
+        while (true)
         {
             colorID = colorSensor.getColorID(); // do a color reading
 
@@ -143,7 +143,7 @@ public class BrickCommands extends AbstractReceiveListener {
             {
                 find_line_again();
             }
-            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)    
+            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
                 System.out.println("found an intersection!");
                 if (current_y != y) // if we still need to go up
@@ -201,9 +201,9 @@ public class BrickCommands extends AbstractReceiveListener {
                 rm.backward();
             }
         }
-        
+
         // GO BACK TO START POINT
-        
+
         current_x = x < 0 ? x + 1 : x - 1;
         current_y = y;
         while (true)
@@ -214,9 +214,9 @@ public class BrickCommands extends AbstractReceiveListener {
             {
                 find_line_again();
             }
-            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)    
+            else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
-                
+
                 System.out.println("found an intersection!");
                 if (current_x != 0)
                 {
@@ -261,8 +261,8 @@ public class BrickCommands extends AbstractReceiveListener {
                 rm.backward();
             }
         }
-        
-        
+
+
     }
 
     private static void find_line_again()
@@ -275,7 +275,7 @@ public class BrickCommands extends AbstractReceiveListener {
         rm.rotate(-100, true);
         lm.rotate(100, true);
         int colorID;
-        
+
         while (rm.isMoving() && lm.isMoving()) {
             // sample = getSample();
             colorID = colorSensor.getColorID();
@@ -307,8 +307,8 @@ public class BrickCommands extends AbstractReceiveListener {
             }
         }
     }
-    
-    private static void rotateL() 
+
+    private static void rotateL()
     {
         lm.stop(true);
         rm.stop(true);
@@ -316,7 +316,7 @@ public class BrickCommands extends AbstractReceiveListener {
         lm.rotate(-620);
     }
 
-    private static void rotateR() 
+    private static void rotateR()
     {
         lm.stop(true);
         rm.stop(true);
@@ -329,8 +329,8 @@ public class BrickCommands extends AbstractReceiveListener {
         lm.rotate(840, true);
         rm.rotate(840);
     }
-    
-    private static void ForwardIntersection() 
+
+    private static void ForwardIntersection()
     {
         lm.stop(true);
         rm.stop();
@@ -344,11 +344,11 @@ public class BrickCommands extends AbstractReceiveListener {
         rm.stop();
         lm.setSpeed(100);
         rm.setSpeed(100);
-        
+
         lm.forward();
         rm.forward();
-        
-        while (true) 
+
+        while (true)
         {
             int sampleSize = touchSensor.sampleSize();
             float[] sample = new float[sampleSize];
@@ -361,13 +361,13 @@ public class BrickCommands extends AbstractReceiveListener {
                 break;
             }
         }
-        
+
         lm.stop(true);
         rm.stop();
         lm.setSpeed(420);
         rm.setSpeed(420);
     }
-    
+
     public static void grabItem()
     {
         gripper.rotate(180);
@@ -375,9 +375,9 @@ public class BrickCommands extends AbstractReceiveListener {
         gripper.forward();
         Delay.msDelay(1000);
     }
-    
-    
-    private void PickupItem() 
+
+
+    private void PickupItem()
     {
         Log.info("Picking up item");
         //move forward
@@ -407,7 +407,7 @@ public class BrickCommands extends AbstractReceiveListener {
         if(turn_left)
             lm.rotate(-840); //rotiraj 90° levo
         else
-            rm.rotate(-840); //rotiraj 90° Desno 
+            rm.rotate(-840); //rotiraj 90° Desno
     }
 
     private void Turn(String direction){

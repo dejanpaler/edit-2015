@@ -55,19 +55,7 @@ public class BrickConnection {
         System.out.println("Message from " + session.getId() + ": " + message);
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(message)).readObject();
-            if (jsonCommand.getString("command").equals("location")) {
-                AC.sendCommand(jsonCommand.getString("data"));
-            } else if (jsonCommand.getString("command").equals("start")) {
-                AC.sendCommand("Order fetch started.");
-            } else if (jsonCommand.getString("command").equals("end")) {
-                AC.sendCommand("Order done.");
-            } else if (jsonCommand.getString("command").equals("pickedUp")) {
-                AC.sendCommand("Item picked up.");
-            } else if (jsonCommand.getString("command").equals("error")) {
-                AC.sendCommand(jsonCommand.getString("data"));
-            } else {
-                AC.sendCommand("Robot send a unknown command.");
-            }
+            AC.sendCommand(jsonCommand.toString());
 
         } catch (Exception ex) {
             ex.printStackTrace();

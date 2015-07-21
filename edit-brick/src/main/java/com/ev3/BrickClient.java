@@ -75,10 +75,10 @@ public class BrickClient {
     }
     public void InformServer(String message, int x, int y, int side) throws IOException {
         CommandWrapper command;
-        if(x == 0 || y == 0){
+        if(x == 0 && y == 0){
             command = new CommandWrapper(message,"");
         }else{
-            command = new CommandWrapper(message, x + ", " + y + ", " + side);
+            command = new CommandWrapper(message, y + ", " + x + ", " + side);
         }
         JsonObject jsonCommand = Json.createObjectBuilder()
                 .add("command", command.getCommand())
@@ -161,8 +161,8 @@ public class BrickClient {
         int i = message.indexOf(";");
         int j = message.indexOf(";", i+1);
         Order order = new Order();
-        order.x = Integer.parseInt(message.substring(0, i));
-        order.y = Integer.parseInt(message.substring(i+1, j));
+        order.y = Integer.parseInt(message.substring(0, i));
+        order.x = Integer.parseInt(message.substring(i+1, j));
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
@@ -273,7 +273,6 @@ public class BrickClient {
             {
 
                 System.out.println("found an intersection!");
-                InformServer("location", current_x, current_y, go_left ? 1 : 0);
                 if (current_x != 0)
                 {
                     System.out.println("goin fwd");
@@ -286,6 +285,8 @@ public class BrickClient {
                 }
                 else if(current_x == 0 && current_y == y) // if we've hit the only intersection on which we have to turn
                 {
+
+                    InformServer("location", current_x, current_y, go_left ? 1 : 0);
                     if (x < 0)
                         rotateR();
                     else
@@ -294,6 +295,7 @@ public class BrickClient {
                 }
                 else if(current_y != 0)
                 {
+                    InformServer("location", current_x, current_y, go_left ? 1 : 0);
                     System.out.println("goin fwd");
                     ForwardIntersection();
                     current_y--;

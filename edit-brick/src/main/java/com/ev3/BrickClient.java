@@ -65,6 +65,7 @@ public class BrickClient {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
+        Log.info("Connected to ws://10.0.1.12:8080/edit-javaee/brick");
     }
     public void addMessageHandler(MessageHandler.Whole<String> handler) {
         this.session.addMessageHandler(handler);

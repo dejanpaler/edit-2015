@@ -26,6 +26,8 @@ import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
+import lejos.hardware.sensor.EV3IRSensor;
+import lejos.robotics.SampleProvider;
 
 class Order
 {
@@ -35,11 +37,6 @@ class Order
 @ClientEndpoint
 public class BrickClient {
 
-    //connect to brick bluetooth host
-    //private static final String uri = "ws://10.0.1.0:8081/brick";
-
-    //private static final String uri = "ws://10.80.49.2:8081/brick";
-
     public Boolean directControl = false;
     private static Port colorSensorPort = SensorPort.S2;
     private static EV3ColorSensor colorSensor = new EV3ColorSensor(colorSensorPort);
@@ -47,25 +44,26 @@ public class BrickClient {
     private static RegulatedMotor rm = new EV3LargeRegulatedMotor(MotorPort.C);
     private static RegulatedMotor gripper = new EV3MediumRegulatedMotor(MotorPort.A);
     private static EV3TouchSensor touchSensor = new EV3TouchSensor(SensorPort.S1);
+    private static EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S3);
+    private static SampleProvider rangeSampler = irSensor.getDistanceMode();
+    public static int WHITE = 6;
+    public static int BLACK = 7;
+    public static int RED = 0;
+
+    /*
+     * === COLORS ===
+     * 6 - WHITE
+     * 7 - BLACK/VERY DARK SOMETHING
+     * 0 - RED
+     */
     private Session session;
     private Queue<String> commandQueue;
 
-    /*
-    @PostConstruct
-    public void connectBrickEndpoint() {
-        final WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
-        try {
-            webSocketContainer.connectToServer(this, URI.create(uri));
-        } catch (DeploymentException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        Log.info("Connected to ws://10.0.1.12:8080/edit-javaee/brick");
+        Log.info("Connected to brick");
     }
     public void addMessageHandler(MessageHandler.Whole<String> handler) {
         this.session.addMessageHandler(handler);
@@ -116,40 +114,7 @@ public class BrickClient {
                 if (Button.waitForAnyPress() == Button.ID_ESCAPE) {
                     System.exit(0);
                 }
-            } else if (command.equals("control")) {
-                //directControl = true;
-            }
-            /*else if(directControl){
-                switch (command){
-                case "grab":
-                    PickupItem();
-                    break;
-
-                case "drop":
-                    DropItem();
-                    break;
-
-                case "turn right":
-                    Turn("right");
-                    break;
-
-                case "turn left":
-                    Turn("left");
-                    break;
-
-                case "forward":
-                    final String data = jsonCommand.getString("data");
-                    int howFar = Integer.parseInt(data);
-                    Forward(360);
-                    Delay.msDelay(howFar*1000);
-                    break;
-
-                case "nocontrol":
-                    directControl = false;
-                    break;
-                }
-            }*/
-            else {
+            } else {
                 Log.info("Command " + command + " doesn't exist.");
             }
         } catch (JsonException je) {
@@ -166,26 +131,16 @@ public class BrickClient {
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
-    public void find_path(int x, int y, boolean go_left, boolean take_from) throws IOException
+    public void find_path(int x, int y, boolean go_up, boolean take_from) throws IOException
     {
-
+        setupHand();
+        
         lm.setSpeed(420);
         rm.setSpeed(420);
 
         int current_x = 0;
         int current_y = 1;
         int colorID;
-
-        int WHITE = 6;
-        int BLACK = 7;
-        int RED = 0;
-
-        /*
-         * === COLORS ===
-         * 6 - WHITE
-         * 7 - BLACK/VERY DARK SOMETHING
-         * 0 - RED
-         */
 
         // GO TO OBJECT
         while (true)
@@ -194,12 +149,12 @@ public class BrickClient {
 
             if (colorID == WHITE) // need to find the line again
             {
-                find_line_again();
+                find_line_again(BLACK);
             }
             else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
                 System.out.println("found an intersection!");
-                InformServer("location", current_x, current_y, go_left ? 1 : 0);
+                InformServer("location", current_x, current_y, go_up ? 1 : 0); // send data to server
                 if (current_y != y) // if we still need to go up
                 {
                     System.out.println("goin fwd");
@@ -223,20 +178,21 @@ public class BrickClient {
                 }
                 else if(current_y == y && current_x == x) // if we're on the final intersection
                 {
-                    if (go_left)
+                    if (!go_up && x < 0 || go_up && x > 0)
                     {
-                        System.out.println("final left turn");
+                        System.out.println("final right turn");
                         rotateR();
                     }
                     else
                     {
-                        System.out.println("final right turn");
+                        System.out.println("final left turn");
                         rotateL();
                     }
                     Sound.beepSequence();
+                    alignToObject();
                     objectGrabbingProcedure();
                     InformServer("PickedUp");
-                    rotateBackOnLine(!go_left);
+                    return_to_line(x, go_up);
                     break;
                 }
                 else // or we're moving horizontally (fwd on the X axis)
@@ -267,7 +223,7 @@ public class BrickClient {
 
             if (colorID == WHITE) // need to find the line again
             {
-                find_line_again();
+                find_line_again(BLACK);
             }
             else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
@@ -276,6 +232,7 @@ public class BrickClient {
                 if (current_x != 0)
                 {
                     System.out.println("goin fwd");
+                    InformServer("location", current_x, current_y, go_up ? 1 : 0);
                     ForwardIntersection();
                     // update current_x position
                     if (x < 0)
@@ -285,8 +242,7 @@ public class BrickClient {
                 }
                 else if(current_x == 0 && current_y == y) // if we've hit the only intersection on which we have to turn
                 {
-
-                    InformServer("location", current_x, current_y, go_left ? 1 : 0);
+                    InformServer("location", current_x, current_y, go_up ? 1 : 0);
                     if (x < 0)
                         rotateR();
                     else
@@ -295,8 +251,8 @@ public class BrickClient {
                 }
                 else if(current_y != 0)
                 {
-                    InformServer("location", current_x, current_y, go_left ? 1 : 0);
                     System.out.println("goin fwd");
+                    InformServer("location", current_x, current_y, go_up ? 1 : 0);
                     ForwardIntersection();
                     current_y--;
                 }
@@ -306,8 +262,8 @@ public class BrickClient {
                     Sound.beepSequence();
                     rm.stop(true);
                     lm.stop();
-                    dropItem();
                     rotate180();
+                    dropItem();
                     InformServer("end");
                     //ForwardIntersection();
                     break;
@@ -320,9 +276,42 @@ public class BrickClient {
                 rm.backward();
             }
         }
+
+
+    }
+    
+    private static void return_to_line(int x, boolean go_up)
+    {
+        int colorID;
+        
+        lm.stop(true);
+        rm.stop();
+        
+        lm.backward();
+        rm.backward();
+        
+        while(true)
+        {  
+            colorID = colorSensor.getColorID();
+            
+            if (colorID == 0 || colorID == 7)
+            {
+                if (!go_up && x < 0 || go_up && x > 0)
+                {
+                    System.out.println("going back on line LEFT");
+                    rotateR();
+                }
+                else
+                {
+                    System.out.println("going back on line RIGHT");
+                    rotateL();
+                }
+                break;
+            }
+        }
     }
 
-    private static void find_line_again()
+    private static void find_line_again(int lineColorID)
     {
      // turn left and try to find the line again
         System.out.println("find line left");
@@ -336,7 +325,7 @@ public class BrickClient {
         while (rm.isMoving() && lm.isMoving()) {
             // sample = getSample();
             colorID = colorSensor.getColorID();
-            if (colorID == 7) // found it!
+            if (colorID == lineColorID) // found it!
             {
                 rm.stop(true);
                 lm.stop();
@@ -354,7 +343,7 @@ public class BrickClient {
             while (rm.isMoving() && lm.isMoving()) {
                 // sample = getSample();
                 colorID = colorSensor.getColorID();
-                if (colorID == 7)  // found it!
+                if (colorID == lineColorID)  // found it!
                 {
                     lm.stop(true);
                     rm.stop();
@@ -364,13 +353,32 @@ public class BrickClient {
             }
         }
     }
+    
+    private static void follow_red_line()
+    {
+        lm.backward();
+        rm.backward();
+        int colorID;
+        
+        while(true)
+        {
+            colorID = colorSensor.getColorID();
+            if (colorID == WHITE) // if we went off-course
+                find_line_again(0);
+            else if(colorID == BLACK) // if we're past the intersection
+                break;
+        }
+       
+     // turn left and try to find the line again
+        
+    }
 
     private static void rotateL()
     {
         lm.stop(true);
         rm.stop(true);
         rm.rotate(120, true);
-        lm.rotate(-620);
+        lm.rotate(-640);
     }
 
     private static void rotateR()
@@ -378,13 +386,28 @@ public class BrickClient {
         lm.stop(true);
         rm.stop(true);
         lm.rotate(120, true);
-        rm.rotate(-620);
+        rm.rotate(-640);
     }
 
     private static void rotate180()
     {
-        lm.rotate(840, true);
-        rm.rotate(840);
+        lm.stop(true);
+        rm.stop();
+        lm.backward();
+        rm.forward();
+        boolean found_white = false;
+        while (true)
+        {
+            if (found_white && colorSensor.getColorID() == BLACK)
+            {
+                    lm.stop(true);
+                    rm.stop();
+                    rm.rotate(60);
+                    break;   
+            }
+            else if(colorSensor.getColorID() == WHITE)
+                found_white = true;
+        }
     }
 
     private static void ForwardIntersection()
@@ -397,6 +420,7 @@ public class BrickClient {
 
     private static void objectGrabbingProcedure()
     {
+        
         lm.stop(true);
         rm.stop();
         lm.setSpeed(100);
@@ -405,10 +429,11 @@ public class BrickClient {
         lm.forward();
         rm.forward();
 
+        int sampleSize = touchSensor.sampleSize();
+        float[] sample = new float[sampleSize];
         while (true)
         {
-            int sampleSize = touchSensor.sampleSize();
-            float[] sample = new float[sampleSize];
+            System.out.println("trying to grab object, fwd");
             touchSensor.fetchSample(sample, 0);
             if(sample[0] == 1)
             {
@@ -477,8 +502,112 @@ public class BrickClient {
         else {
             //turn around
         }
+
     }
+    
+    private static void setupHand()
+    {
+        gripper.rotate(-720,true);
+        gripper.backward();
+        while (true) {
+            int sampleSize = touchSensor.sampleSize();
+            
+            float[] sample = new float[sampleSize];
+            touchSensor.fetchSample(sample, 0);
+            if(sample[0]==1){
+                gripper.stop(true);
+                gripper.rotate(-180);
+                gripper.forward();
+                Delay.msDelay(800);
+                gripper.stop();
+                break;
+            }
+        }
+    }
+    
+    private static void alignToObject()
+    {
+        lm.stop(true);
+        rm.stop();
+        
+        rm.rotate(-100, true);
+        lm.rotate(100);
+        
+        lm.setSpeed(50);
+        rm.setSpeed(50);
+    
+    
+        boolean found = false;
+        float[] sample = new float[rangeSampler.sampleSize()];
+        irSensor.getDistanceMode().fetchSample(sample,0);   
 
+        System.out.println("TS: " + sample[0] + "cm");
+
+        if(!Float.isFinite(sample[0]))
+            sample[0]=255;
+        float lastRange=sample[0];
+
+        
+
+
+        /*
+        System.out.println("looking right");
+        while (rm.isMoving() && lm.isMoving()) 
+        {
+            // sample = getSample();
+            irSensor.getDistanceMode().fetchSample(sample,0);   
+            System.out.println("TS: " + sample[0] + "cm");
+            if(!Float.isFinite(sample[0]))
+                sample[0]=255;
+            
+            if (sample[0]>lastRange) 
+            {
+                lm.stop(true);
+                rm.stop();
+                found=true;
+                break;
+            }
+            else 
+                lastRange=sample[0];
+            
+        }
+        */
+        
+        if(!found)
+        {
+
+            System.out.println("looking left");
+            lm.stop(true);
+            rm.stop();
+            lm.rotate(-420, true);
+            rm.rotate(420, true);
+
+            while (true)
+            {
+                // sample = getSample();
+                irSensor.getDistanceMode().fetchSample(sample,0);
+                
+                
+                if(!Float.isFinite(sample[0]))
+                    sample[0]=255;
+                
+                System.out.println("prev: " + lastRange + " cm");
+                System.out.println("TS: " + sample[0] + " cm");
+                
+                
+                if (sample[0] > lastRange)
+                {
+                    lm.stop(true);
+                    rm.stop();
+                    lm.rotate(50);
+                    found = true;
+                    break;
+                }
+                else
+                    lastRange = sample[0];
+            }
+        }
+        lm.stop(true);
+        rm.stop();
+    }
 }
-
-

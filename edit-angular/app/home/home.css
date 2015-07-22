@@ -1,0 +1,75 @@
+.navbar-inverse {
+  background-color: #f15a4b;
+  color: white;
+  border-color: #f15a4b;
+}
+
+.navbar-inverse .navbar-brand {
+  color: white;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+  color: white;
+  background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: white;
+}
+
+.navbar-inverse .navbar-toggle {
+  border-color: #770b00;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+  color: #fff;
+  background-color: #770b00;
+  border-radius: 5px;
+}
+
+.padding {
+  padding-bottom: 2cm;
+}
+
+.padding2 {
+  padding-top: 7px;
+}
+
+.padding3 {
+  padding-right: 15px;
+  padding-left: 10px;
+}
+
+.padding4 {
+  padding-left: 30px;
+  padding-right: 60px;
+  float: right;
+}
+
+.navbar-inverse .navbar-collapse {
+  border-top-color: #9c0c00;
+}
+
+.navbar-inverse .navbar-toggle:focus {
+  background-color: #770b00;
+}
+
+.navbar-inverse .navbar-toggle:hover {
+  background-color: #9c0c00;
+}
+
+a:focus {
+  outline: 0;
+}
+
+.cup {
+  background-color: rgba(241, 90, 75, 0.16);
+  border-radius: 5px;
+}
+
+.cupname {
+  color: #770b00;
+}

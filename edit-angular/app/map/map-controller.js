@@ -115,7 +115,7 @@
     vm.down = function () {
       angular.element('#container').remove();
       mapArray[posY][posX] = 0;
-      if (posY < 14) {
+      if (posY < 10) {
         posY += 1;
       }
       if (mapArray[posY][posX] === 3) {
@@ -153,7 +153,7 @@
     vm.right = function () {
       angular.element('#container').remove();
       mapArray[posY][posX] = 0;
-      if (posX < 14) {
+      if (posX < 10) {
         posX += 1;
       }
       if (mapArray[posY][posX] === 3) {

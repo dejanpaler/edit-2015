@@ -73,31 +73,13 @@ public class ItemService {
     }
 
     @POST
-    @Path("/getItem")
-    public Response getItemById(String id) {
-        Item item = items.findItem(id);
-        int coordX = item.getCoorX();
-        int coordY = item.getCoorY();
-        int direction = item.getDirection().ordinal();
-        String order = Integer.toString(coordX) + ";" + Integer.toString(coordY) + ";" + Integer.toString(direction);
-        try {
-            // BC.sendCommand(order);
-            return Response.ok("Order sent").build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(406).build();
-        }
-
-    }
-
-    @POST
     @Path("/get")
     public Response commandGet(String command) {
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
 
             Item item = items.findItem(jsonCommand.getString("id"));
-
+            BC.setId(jsonCommand.getString("id"));
             if (item != null) {
                 String coords = Integer.toString(item.getCoorX()) + ";" + Integer.toString(item.getCoorY()) + ";"
                         + Integer.toString(item.getDirection().ordinal());
@@ -118,6 +100,7 @@ public class ItemService {
 
     @POST
     @Path("/put")
+    @Produces
     public Response commandPut(String command) {
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
@@ -130,9 +113,9 @@ public class ItemService {
                 JsonObject order = Json.createObjectBuilder().add("command", "put").add("data", data).build();
                 BC.sendCommand(order.toString());
 
-                return Response.ok("Item: \"" + jsonCommand.getString("title") + "\" added to storage.").build();
+                return Response.ok().build();
             } else {
-                return Response.ok("Storage is full").build();
+                return Response.status(Status.BAD_REQUEST).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,14 +125,15 @@ public class ItemService {
 
     @POST
     @Path("/edit")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response commandEdit(String command) {
         try {
             final JsonObject jsonCommand = Json.createReader(new StringReader(command)).readObject();
 
             if (items.EditItem(jsonCommand.getString("id"), jsonCommand.getString("title"))) {
-                return Response.ok("Item edited").build();
+                return Response.ok().build();
             } else {
-                return Response.ok("Edit failed").build();
+                return Response.status(Status.BAD_REQUEST).build();
             }
         } catch (Exception e) {
             e.printStackTrace();

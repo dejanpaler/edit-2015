@@ -133,7 +133,14 @@ public class BrickClient {
     }
     public void find_path(int x, int y, boolean go_up, boolean take_from) throws IOException
     {
-        setupHand();
+        if (take_from)
+            setupHand();
+        else
+        {
+            grabItem();
+            InformServer("PickedUp");
+        }
+            
         
         lm.setSpeed(420);
         rm.setSpeed(420);
@@ -149,7 +156,7 @@ public class BrickClient {
 
             if (colorID == WHITE) // need to find the line again
             {
-                find_line_again(BLACK);
+                find_line_again(BLACK, RED);
             }
             else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
@@ -188,10 +195,21 @@ public class BrickClient {
                         System.out.println("final left turn");
                         rotateL();
                     }
+                    
+                    // GRAB OR DROP ITEM
                     Sound.beepSequence();
-                    alignToObject();
-                    objectGrabbingProcedure();
-                    InformServer("PickedUp");
+                    if (take_from)
+                    {
+                        alignToObject();
+                        objectGrabbingProcedure();
+                        InformServer("PickedUp");
+                    }
+                    else
+                    {
+                        ForwardIntersection();
+                        dropItem();
+                        InformServer("Dropped");
+                    }
                     return_to_line(x, go_up);
                     break;
                 }
@@ -223,7 +241,7 @@ public class BrickClient {
 
             if (colorID == WHITE) // need to find the line again
             {
-                find_line_again(BLACK);
+                find_line_again(BLACK, RED);
             }
             else if (colorID == 5 || colorID == RED) // if we've found an intersection (red color)
             {
@@ -311,7 +329,7 @@ public class BrickClient {
         }
     }
 
-    private static void find_line_again(int lineColorID)
+    private static void find_line_again(int lineColorID, int lineColorID_2)
     {
      // turn left and try to find the line again
         System.out.println("find line left");
@@ -325,7 +343,7 @@ public class BrickClient {
         while (rm.isMoving() && lm.isMoving()) {
             // sample = getSample();
             colorID = colorSensor.getColorID();
-            if (colorID == lineColorID) // found it!
+            if (colorID == lineColorID || colorID == lineColorID_2) // found it!
             {
                 rm.stop(true);
                 lm.stop();
@@ -337,13 +355,13 @@ public class BrickClient {
         // if searching towards left didn't succeed, search towards right
         if (!found) {
             System.out.println("find line right");
-            lm.rotate(-200, true);
-            rm.rotate(200, true);
+            lm.rotate(-210, true);
+            rm.rotate(210, true);
 
             while (rm.isMoving() && lm.isMoving()) {
                 // sample = getSample();
                 colorID = colorSensor.getColorID();
-                if (colorID == lineColorID)  // found it!
+                if (colorID == lineColorID || colorID == lineColorID_2)  // found it!
                 {
                     lm.stop(true);
                     rm.stop();
@@ -364,7 +382,7 @@ public class BrickClient {
         {
             colorID = colorSensor.getColorID();
             if (colorID == WHITE) // if we went off-course
-                find_line_again(RED);
+                find_line_again(RED, 255);
             else if(colorID == BLACK) // if we're past the intersection
                 break;
         }
@@ -497,6 +515,7 @@ public class BrickClient {
     
     
         boolean found = false;
+        boolean isFurther = false;
         float[] sample = new float[rangeSampler.sampleSize()];
         irSensor.getDistanceMode().fetchSample(sample,0);   
 
@@ -529,13 +548,23 @@ public class BrickClient {
                 System.out.println("TS: " + sample[0] + " cm");
                 
                 
-                if (sample[0] > lastRange)
+                if (sample[0] > lastRange && isFurther)
                 {
                     lm.stop(true);
                     rm.stop();
                     lm.rotate(50);
                     found = true;
                     break;
+                } 
+                else if (sample[0] > lastRange)
+                {
+                    isFurther = true;
+                    lastRange = sample[0];
+                }
+                else if (sample[0] < lastRange)
+                {
+                    isFurther = false;
+                    lastRange = sample[0];
                 }
                 else
                     lastRange = sample[0];

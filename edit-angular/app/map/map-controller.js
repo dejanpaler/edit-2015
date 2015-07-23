@@ -77,33 +77,33 @@
           if (parseInt(commands.coordinate.split(',')[0], 10) - corY === 1) {
             $timeout(function () {
               vm.up();
+            }, 500);
+            $timeout(function () {
+              vm.up();
             }, 1000);
             $timeout(function () {
               vm.up();
-            }, 2000);
-            $timeout(function () {
-              vm.up();
-            }, 3000);
+            }, 1500);
             if (pom === 'start') {
               $timeout(function () {
                 vm.up();
-              }, 4000);
+              }, 2000);
               $timeout(function () {
                 vm.up();
-              }, 5000);
+              }, 2500);
               pom = 'end';
             }
             corY += 1;
           } else if (parseInt(commands.coordinate.split(',')[0], 10) - corY === -1) {
             $timeout(function () {
               vm.down();
+            }, 500);
+            $timeout(function () {
+              vm.down();
             }, 1000);
             $timeout(function () {
               vm.down();
-            }, 2000);
-            $timeout(function () {
-              vm.down();
-            }, 3000);
+            }, 1500);
             if (pom === 'end') {
               pom = 'start';
             }
@@ -111,18 +111,18 @@
           } else if (parseInt(commands.coordinate.split(',')[1], 10) - corX === -1) {
             $timeout(function () {
               vm.left();
-            }, 1000);
+            }, 500);
             $timeout(function () {
               vm.left();
-            }, 2000);
+            }, 1000);
             corX -= 1;
           } else if (parseInt(commands.coordinate.split(',')[1], 10) - corX === 1) {
             $timeout(function () {
               vm.right();
-            }, 1000);
+            }, 500);
             $timeout(function () {
               vm.right();
-            }, 2000);
+            }, 1000);
             corX += 1;
           }
         } else if (commands.command === 'start') {
@@ -131,17 +131,17 @@
           if (pom !== 'dropped') {
             $timeout(function () {
               vm.down();
-            }, 1000);
+            }, 500);
             $timeout(function () {
               vm.down();
-            }, 2000);
+            }, 1000);
           }
         } else if (commands.command === 'pickedUp') {
           if (pom === 'end') {
             if (z === 1) {
               $timeout(function () {
                 vm.down();
-              }, 1000);
+              }, 500);
               $timeout(function () {
                 pick = 4;
                 mapArray[posY][posX] = pick;
@@ -149,11 +149,11 @@
               }, 3000);
               $timeout(function () {
                 vm.up();
-              }, 5000);
+              }, 4500);
             } else {
               $timeout(function () {
                 vm.up();
-              }, 1000);
+              }, 500);
               $timeout(function () {
                 pick = 4;
                 mapArray[posY][posX] = pick;
@@ -161,7 +161,7 @@
               }, 3000);
               $timeout(function () {
                 vm.down();
-              }, 5000);
+              }, 4500);
             }
           } else {
             pick = 4;
@@ -173,7 +173,7 @@
             if (z === 1) {
               $timeout(function () {
                 vm.down();
-              }, 1000);
+              }, 500);
               $timeout(function () {
                 pick = 2;
                 mapArray[posY][posX] = pick;
@@ -181,11 +181,13 @@
               }, 3000);
               $timeout(function () {
                 vm.up();
-              }, 5000);
+              }, 4500);
+              mapArray[posY+1][posX] = 1;
+              vm.drawMap2();
             } else {
               $timeout(function () {
                 vm.up();
-              }, 1000);
+              }, 500);
               $timeout(function () {
                 pick = 2;
                 mapArray[posY][posX] = pick;
@@ -193,20 +195,22 @@
               }, 3000);
               $timeout(function () {
                 vm.down();
-              }, 5000);
+                mapArray[posY-1][posX] = 1;
+                vm.drawMap2();
+              }, 4500);
             }
           } else {
             $timeout(function () {
               vm.down();
-            }, 1000);
+            }, 500);
             $timeout(function () {
               vm.down();
-            }, 2000);
+            }, 1000);
             $timeout(function () {
               pick = 2;
               mapArray[posY][posX] = pick;
               vm.drawMap2();
-            }, 3000);
+            }, 1500);
             pom = 'dropped';
           }
         }

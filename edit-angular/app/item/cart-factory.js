@@ -53,9 +53,7 @@
     }
 
     function removeAllItems() {
-      for (i = 0; i < CartBase.items.length; i++) {
-        removeFromCart(CartBase.items[i].id);
-      }
+      CartBase.items.splice(CartBase.items, CartBase.items.length);
     }
   }
 }());

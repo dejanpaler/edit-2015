@@ -126,8 +126,8 @@ public class BrickClient {
         int i = message.indexOf(";");
         int j = message.indexOf(";", i+1);
         Order order = new Order();
-        order.y = Integer.parseInt(message.substring(0, i));
-        order.x = Integer.parseInt(message.substring(i+1, j));
+        order.x = Integer.parseInt(message.substring(0, i));
+        order.y = Integer.parseInt(message.substring(i+1, j));
         order.side = Integer.parseInt(message.substring(j+1));
         return order;
     }
@@ -180,13 +180,13 @@ public class BrickClient {
                     {
                         System.out.println("goin left");
                         current_x--;
-                        rotateL();
+                        rotateL_90();
                     }
                     else
                     {
                         System.out.println("goin right");
                         current_x++;
-                        rotateR();
+                        rotateR_90();
                     }
                 }
                 else if(current_y == y && current_x == x) // if we're on the final intersection
@@ -323,12 +323,12 @@ public class BrickClient {
                 if (!go_up && x < 0 || go_up && x > 0)
                 {
                     System.out.println("going back on line LEFT");
-                    rotateR();
+                    rotateR_90();
                 }
                 else
                 {
                     System.out.println("going back on line RIGHT");
-                    rotateL();
+                    rotateL_90();
                 }
                 break;
             }
@@ -410,6 +410,22 @@ public class BrickClient {
         lm.rotate(120, true);
         rm.rotate(-640);
     }
+    
+    private static void rotateR_90()
+    {
+        lm.stop(true);
+        rm.stop();
+        lm.rotate(80, true);
+        rm.rotate(-660);
+    }
+    private static void rotateL_90()
+    {
+        lm.stop(true);
+        rm.stop();
+        lm.rotate(80, true);
+        rm.rotate(-660);
+    }
+
 
     private static void rotate180()
     {

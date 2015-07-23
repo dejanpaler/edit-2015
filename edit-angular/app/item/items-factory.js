@@ -12,8 +12,9 @@
     .module('item')
     .factory('Items', Items);
 
-  function Items($http, $q) {
-    var ItemsBase = {};
+  function Items($http, $q, $websocket) {
+    var ItemsBase = {},
+        socket;
 
     ItemsBase.getAllItems = function () {
       var defer = $q.defer();
@@ -40,6 +41,22 @@
       });
       return defer.promise;
     };
+
+    init();
+
+    function init() {
+      socket = $websocket('ws://10.80.49.2:8080/edit-javaee/angular');
+
+      socket.onMessage(function (msg) {
+        console.log(msg);
+      });
+
+      socket.onOpen(function () {
+        console.log('Connection opened');
+      });
+
+      ItemsBase.soc = socket;
+    }
 
     return ItemsBase;
   }

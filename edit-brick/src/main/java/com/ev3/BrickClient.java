@@ -206,7 +206,7 @@ public class BrickClient {
                     }
                     else
                     {
-                        ForwardIntersection();
+                        goBackwardsShort();
                         dropItem();
                         InformServer("Dropped");
                     }
@@ -432,6 +432,29 @@ public class BrickClient {
         rm.stop();
         lm.rotate(-200, true);
         rm.rotate(-200);
+    }
+    
+    private static void goBackwardsShort()
+    {
+        lm.stop(true);
+        rm.stop();
+        lm.forward();
+        rm.forward();
+        
+        boolean found_line = false;
+        int colorID;
+        
+        while (true)
+        {
+            colorID = colorSensor.getColorID();
+            if (colorID == BLACK || colorID == RED)
+                found_line = true;
+            else if(colorID == WHITE && found_line)
+            {
+                lm.stop(true);
+                rm.stop();
+            }
+        }
     }
 
     private static void objectGrabbingProcedure()

@@ -605,8 +605,8 @@ public class BrickClient {
                 {
                     lm.stop(true);
                     rm.stop();
-                    lm.rotate(30);
-                    rm.rotate(-30);
+                    lm.rotate(50);
+                    rm.rotate(-50);
                     found = true;
                     break;
                 }

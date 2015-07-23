@@ -8,6 +8,7 @@
    */
   angular
     .module('map', [
-      'ui.router'
+      'ui.router',
+      'ngWebSocket'
     ]);
 }());

@@ -133,6 +133,12 @@ public class BrickClient {
     }
     public void find_path(int x, int y, boolean go_up, boolean take_from) throws IOException
     {
+        go_up = !go_up;
+        Log.info("x: " + x);
+        Log.info("y: " + y);
+        Log.info("down: " + go_up);
+        Log.info("take_from: " + take_from);
+        
         if (take_from)
             setupHand();
         else

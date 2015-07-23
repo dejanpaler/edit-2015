@@ -1,19 +1,13 @@
 <h2>Map</h2>
 
-<div id="mapa" ng-init="map.drawMap()"></div>
-<button ng-click="map.up()">UP</button>
-<button ng-click="map.down()">DOWN</button>
-<button ng-click="map.left()">LEFT</button>
-<button ng-click="map.right()">RIGHT</button>
-
-<br />
-<br />
 <br />
 <br />
 
-<canvas id="canvas" height="352px" width="352px"></canvas>
-<div id="mapa2" ng-init="map.drawMap2()"></div>
-
-<div ng-controller="BrickCtrl as brk">
-  <button ng-click="brk.location()">Location</button>
+<div>
+  <canvas id="canvas" style="margin-left: 200px" height="352px" width="352px"></canvas>
+  <div id="mapa2" ng-init="map.drawMap2()"></div>
+  <button ng-click="map.up()">UP</button>
+  <button ng-click="map.down()">DOWN</button>
+  <button ng-click="map.left()">LEFT</button>
+  <button ng-click="map.right()">RIGHT</button>
 </div>

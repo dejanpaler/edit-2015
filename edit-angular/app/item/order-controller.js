@@ -25,6 +25,7 @@
       for (i = 0; i < Cart.items.length; i++) {
         $http.post('http://10.80.49.2:8080/edit-javaee/items/get', {id: Cart.items[i].id});
       }
+      location.href = "/#/map";
     };
   }
 }());

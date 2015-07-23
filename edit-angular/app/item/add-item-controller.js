@@ -28,7 +28,7 @@
 
     vm.addItem = function (title) {
       $http.post('http://10.80.49.2:8080/edit-javaee/items/put', {title: title});
-      location.reload();
+      location.href = '/#/map';
     };
 
     vm.editItem = function (id, title) {

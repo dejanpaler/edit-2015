@@ -12,7 +12,7 @@
     .module('item')
     .controller('ItemCtrl', ItemCtrl);
 
-  function ItemCtrl($http, Cart, Items) {
+  function ItemCtrl(Cart, Items) {
     var vm = this;
     vm.ctrlName = 'ItemCtrl';
 
@@ -33,10 +33,6 @@
       } else {
         Cart.addToCart(id);
       }
-    };
-
-    vm.sendId = function (id) {
-      $http.post('http://10.80.49.2:8080/edit-javaee/items/get', {id: id});
     };
 
     vm.isInCart = Cart.isInCart;

@@ -364,12 +364,10 @@ public class BrickClient {
         {
             colorID = colorSensor.getColorID();
             if (colorID == WHITE) // if we went off-course
-                find_line_again(0);
+                find_line_again(RED);
             else if(colorID == BLACK) // if we're past the intersection
                 break;
         }
-       
-     // turn left and try to find the line again
         
     }
 
@@ -458,51 +456,12 @@ public class BrickClient {
         Delay.msDelay(1000);
     }
 
-
-    private void PickupItem()
-    {
-        Log.info("Picking up item");
-        //move forward
-
-        gripper.rotate(-180);
-        Delay.msDelay(1000);
-        gripper.rotate(180);
-        Delay.msDelay(1000);
-        gripper.forward();
-        Delay.msDelay(1000);
-
-        //move backward
-        Button.LEDPattern(2);
-        Log.info("Item picked up");
-    }
-
     private static void dropItem() {
         Log.info("Dropping..:");
         gripper.backward();
         Delay.msDelay(1000);
         gripper.rotate(-180);
         Log.info("Item dropped.");
-    }
-
-    private static void rotateBackOnLine(boolean turn_left)
-    {
-        if(turn_left)
-            lm.rotate(-840); //rotiraj 90° levo
-        else
-            rm.rotate(-840); //rotiraj 90° Desno
-    }
-
-    private void Turn(String direction){
-        if(direction.equals("right")){
-            //turn right
-        }
-        else if (direction.equals("left")){
-            //turn left
-        }
-        else {
-            //turn around
-        }
-
     }
     
     private static void setupHand()
@@ -545,34 +504,9 @@ public class BrickClient {
 
         if(!Float.isFinite(sample[0]))
             sample[0]=255;
+        
         float lastRange=sample[0];
 
-        
-
-
-        /*
-        System.out.println("looking right");
-        while (rm.isMoving() && lm.isMoving()) 
-        {
-            // sample = getSample();
-            irSensor.getDistanceMode().fetchSample(sample,0);   
-            System.out.println("TS: " + sample[0] + "cm");
-            if(!Float.isFinite(sample[0]))
-                sample[0]=255;
-            
-            if (sample[0]>lastRange) 
-            {
-                lm.stop(true);
-                rm.stop();
-                found=true;
-                break;
-            }
-            else 
-                lastRange=sample[0];
-            
-        }
-        */
-        
         if(!found)
         {
 

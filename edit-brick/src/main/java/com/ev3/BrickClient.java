@@ -180,13 +180,13 @@ public class BrickClient {
                     {
                         System.out.println("goin left");
                         current_x--;
-                        rotateL_90();
+                        rotateL();
                     }
                     else
                     {
                         System.out.println("goin right");
                         current_x++;
-                        rotateR_90();
+                        rotateR();
                     }
                 }
                 else if(current_y == y && current_x == x) // if we're on the final intersection
@@ -323,12 +323,12 @@ public class BrickClient {
                 if (!go_up && x < 0 || go_up && x > 0)
                 {
                     System.out.println("going back on line LEFT");
-                    rotateR_90();
+                    rotateR();
                 }
                 else
                 {
                     System.out.println("going back on line RIGHT");
-                    rotateL_90();
+                    rotateL();
                 }
                 break;
             }

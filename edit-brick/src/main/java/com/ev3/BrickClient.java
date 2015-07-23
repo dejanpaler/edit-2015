@@ -431,6 +431,10 @@ public class BrickClient {
     {
         lm.stop(true);
         rm.stop();
+        while ((!lm.isMoving()) && (!rm.isMoving()))
+        {
+            // wait for motors
+        }
         lm.backward();
         rm.forward();
         boolean found_white = false;
@@ -460,6 +464,11 @@ public class BrickClient {
     {
         lm.stop(true);
         rm.stop();
+        while ((!lm.isMoving()) && (!rm.isMoving()))
+        {
+            // wait for motors
+        }
+            
         lm.forward();
         rm.forward();
         
@@ -598,7 +607,8 @@ public class BrickClient {
                 {
                     lm.stop(true);
                     rm.stop();
-                    lm.rotate(50);
+                    lm.rotate(30);
+                    rm.rotate(-30);
                     found = true;
                     break;
                 } 

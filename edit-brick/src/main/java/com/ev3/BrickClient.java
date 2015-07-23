@@ -459,6 +459,7 @@ public class BrickClient {
             {
                 lm.stop(true);
                 rm.stop();
+                break;
             }
         }
     }

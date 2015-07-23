@@ -108,7 +108,7 @@ public class ItemService {
             Location location = items.AddItem(jsonCommand.getString("title"));
 
             if (location != null) {
-                String data = Integer.toString(location.getCol()) + ";" + Integer.toString(location.getRow()) + ";"
+                String data = Integer.toString(location.getRow()) + ";" + Integer.toString(location.getCol()) + ";"
                         + Integer.toString(location.getDirection().ordinal());
                 JsonObject order = Json.createObjectBuilder().add("command", "put").add("data", data).build();
                 BC.sendCommand(order.toString());

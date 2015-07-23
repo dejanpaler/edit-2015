@@ -1,33 +1,31 @@
 package com.ev3;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Queue;
 
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.MessageHandler;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 
-import lejos.hardware.motor.*;
-import lejos.hardware.port.MotorPort;
-
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.RegulatedMotor;
-import lejos.utility.Delay;
-
-import java.io.StringReader;
-
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 class Order
 {
@@ -76,7 +74,7 @@ public class BrickClient {
         if(x == 0 && y == 0){
             command = new CommandWrapper(message,"");
         }else{
-            command = new CommandWrapper(message, y + ", " + x + ", " + side);
+            command = new CommandWrapper(message, x + ", " + y + ", " + side);
         }
         JsonObject jsonCommand = Json.createObjectBuilder()
                 .add("command", command.getCommand())
@@ -138,7 +136,7 @@ public class BrickClient {
         Log.info("y: " + y);
         Log.info("down: " + go_up);
         Log.info("take_from: " + take_from);
-        
+
         if (take_from)
             setupHand();
         else
@@ -146,13 +144,13 @@ public class BrickClient {
             grabItem();
             InformServer("PickedUp");
         }
-            
-        
+
+
         lm.setSpeed(420);
         rm.setSpeed(420);
 
-        int current_x = 0;
-        int current_y = 1;
+        int current_x = 1;
+        int current_y = 0;
         int colorID;
 
         // GO TO OBJECT
@@ -168,30 +166,30 @@ public class BrickClient {
             {
                 System.out.println("found an intersection!");
                 InformServer("location", current_x, current_y, go_up ? 1 : 0); // send data to server
-                if (current_y != y) // if we still need to go up
+                if (current_x != x) // if we still need to go up
                 {
                     System.out.println("goin fwd");
-                    current_y++;
+                    current_x++;
                     ForwardIntersection();
                 }
-                else if(current_y == y && current_x == 0) // if we've found the intersection on which we need to turn
+                else if(current_x == x && current_y == 0) // if we've found the intersection on which we need to turn
                 {
-                    if (x < 0)
+                    if (y < 0)
                     {
                         System.out.println("goin left");
-                        current_x--;
+                        current_y--;
                         rotateL();
                     }
                     else
                     {
                         System.out.println("goin right");
-                        current_x++;
+                        current_y++;
                         rotateR();
                     }
                 }
-                else if(current_y == y && current_x == x) // if we're on the final intersection
+                else if(current_x == x && current_y == y) // if we're on the final intersection
                 {
-                    if (!go_up && x < 0 || go_up && x > 0)
+                    if (!go_up && y < 0 || go_up && y > 0)
                     {
                         System.out.println("final right turn");
                         rotateR();
@@ -201,7 +199,7 @@ public class BrickClient {
                         System.out.println("final left turn");
                         rotateL();
                     }
-                    
+
                     // GRAB OR DROP ITEM
                     Sound.beepSequence();
                     if (take_from)
@@ -216,17 +214,17 @@ public class BrickClient {
                         dropItem();
                         InformServer("Dropped");
                     }
-                    return_to_line(x, go_up);
+                    return_to_line(y, go_up);
                     break;
                 }
-                else // or we're moving horizontally (fwd on the X axis)
+                else // or we're moving horizontally (fwd on the Y axis)
                 {
                     System.out.println("goin fwd (sideways)");
                     ForwardIntersection();
-                    if (x < 0)
-                        current_x--;
+                    if (y < 0)
+                        current_y--;
                     else
-                        current_x++;
+                        current_y++;
                 }
             }
             else // base case is, that we're on the line, so go forward - fwd
@@ -239,8 +237,8 @@ public class BrickClient {
 
         // GO BACK TO START POINT
 
-        current_x = x < 0 ? x + 1 : x - 1;
-        current_y = y;
+        current_y = y < 0 ? y + 1 : y - 1;
+        current_x = x;
         while (true)
         {
             colorID = colorSensor.getColorID(); // do a color reading
@@ -253,32 +251,32 @@ public class BrickClient {
             {
 
                 System.out.println("found an intersection!");
-                if (current_x != 0)
+                if (current_y != 0)
                 {
                     System.out.println("goin fwd");
                     InformServer("location", current_x, current_y, go_up ? 1 : 0);
                     ForwardIntersection();
                     // update current_x position
-                    if (x < 0)
-                        current_x++;
+                    if (y < 0)
+                        current_y++;
                     else
-                        current_x--;
+                        current_y--;
                 }
-                else if(current_x == 0 && current_y == y) // if we've hit the only intersection on which we have to turn
+                else if(current_y == 0 && current_x == x) // if we've hit the only intersection on which we have to turn
                 {
                     InformServer("location", current_x, current_y, go_up ? 1 : 0);
-                    if (x < 0)
+                    if (y < 0)
                         rotateR();
                     else
                         rotateL();
-                    current_y--;
+                    current_x--;
                 }
-                else if(current_y != 0)
+                else if(current_x != 0)
                 {
                     System.out.println("goin fwd");
                     InformServer("location", current_x, current_y, go_up ? 1 : 0);
                     ForwardIntersection();
-                    current_y--;
+                    current_x--;
                 }
                 else
                 {
@@ -303,24 +301,24 @@ public class BrickClient {
 
 
     }
-    
-    private static void return_to_line(int x, boolean go_up)
+
+    private static void return_to_line(int y, boolean go_up)
     {
         int colorID;
-        
+
         lm.stop(true);
         rm.stop();
-        
+
         lm.backward();
         rm.backward();
-        
+
         while(true)
-        {  
+        {
             colorID = colorSensor.getColorID();
-            
+
             if (colorID == 0 || colorID == 7)
             {
-                if (!go_up && x < 0 || go_up && x > 0)
+                if (!go_up && y < 0 || go_up && y > 0)
                 {
                     System.out.println("going back on line LEFT");
                     rotateR();
@@ -377,13 +375,13 @@ public class BrickClient {
             }
         }
     }
-    
+
     private static void follow_red_line()
     {
         lm.backward();
         rm.backward();
         int colorID;
-        
+
         while(true)
         {
             colorID = colorSensor.getColorID();
@@ -392,7 +390,7 @@ public class BrickClient {
             else if(colorID == BLACK) // if we're past the intersection
                 break;
         }
-        
+
     }
 
     private static void rotateL()
@@ -410,7 +408,7 @@ public class BrickClient {
         lm.rotate(120, true);
         rm.rotate(-640);
     }
-    
+
     private static void rotateR_90()
     {
         lm.stop(true);
@@ -441,7 +439,7 @@ public class BrickClient {
                     lm.stop(true);
                     rm.stop();
                     rm.rotate(60);
-                    break;   
+                    break;
             }
             else if(colorSensor.getColorID() == WHITE)
                 found_white = true;
@@ -455,17 +453,17 @@ public class BrickClient {
         lm.rotate(-200, true);
         rm.rotate(-200);
     }
-    
+
     private static void goBackwardsShort()
     {
         lm.stop(true);
         rm.stop();
         lm.forward();
         rm.forward();
-        
+
         boolean found_line = false;
         int colorID;
-        
+
         while (true)
         {
             colorID = colorSensor.getColorID();
@@ -482,7 +480,7 @@ public class BrickClient {
 
     private static void objectGrabbingProcedure()
     {
-        
+
         lm.stop(true);
         rm.stop();
         lm.setSpeed(100);
@@ -527,14 +525,14 @@ public class BrickClient {
         gripper.rotate(-180);
         Log.info("Item dropped.");
     }
-    
+
     private static void setupHand()
     {
         gripper.rotate(-720,true);
         gripper.backward();
         while (true) {
             int sampleSize = touchSensor.sampleSize();
-            
+
             float[] sample = new float[sampleSize];
             touchSensor.fetchSample(sample, 0);
             if(sample[0]==1){
@@ -547,29 +545,29 @@ public class BrickClient {
             }
         }
     }
-    
+
     private static void alignToObject()
     {
         lm.stop(true);
         rm.stop();
-        
+
         rm.rotate(-100, true);
         lm.rotate(100);
-        
+
         lm.setSpeed(50);
         rm.setSpeed(50);
-    
-    
+
+
         boolean found = false;
         boolean isFurther = false;
         float[] sample = new float[rangeSampler.sampleSize()];
-        irSensor.getDistanceMode().fetchSample(sample,0);   
+        irSensor.getDistanceMode().fetchSample(sample,0);
 
         System.out.println("TS: " + sample[0] + "cm");
 
         if(!Float.isFinite(sample[0]))
             sample[0]=255;
-        
+
         float lastRange=sample[0];
 
         if(!found)
@@ -585,15 +583,15 @@ public class BrickClient {
             {
                 // sample = getSample();
                 irSensor.getDistanceMode().fetchSample(sample,0);
-                
-                
+
+
                 if(!Float.isFinite(sample[0]))
                     sample[0]=255;
-                
+
                 System.out.println("prev: " + lastRange + " cm");
                 System.out.println("TS: " + sample[0] + " cm");
-                
-                
+
+
                 if (sample[0] > lastRange && isFurther)
                 {
                     lm.stop(true);
@@ -601,7 +599,7 @@ public class BrickClient {
                     lm.rotate(50);
                     found = true;
                     break;
-                } 
+                }
                 else if (sample[0] > lastRange)
                 {
                     isFurther = true;

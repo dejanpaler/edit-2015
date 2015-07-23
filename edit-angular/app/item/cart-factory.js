@@ -21,6 +21,7 @@
     CartBase.isInCart = isInCart;
     CartBase.addToCart = addToCart;
     CartBase.removeFromCart = removeFromCart;
+    CartBase.removeAllItems = removeAllItems;
 
     return CartBase;
 
@@ -48,6 +49,12 @@
     function removeFromCart(id) {
       if (isInCart(id)) {
         CartBase.items.splice(idIndex(id), 1);
+      }
+    }
+
+    function removeAllItems() {
+      for (i = 0; i < CartBase.items.length; i++) {
+        removeFromCart(CartBase.items[i].id);
       }
     }
   }

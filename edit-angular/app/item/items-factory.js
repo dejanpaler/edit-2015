@@ -18,7 +18,7 @@
 
     ItemsBase.getAllItems = function () {
       var defer = $q.defer();
-      $http.get('http://10.80.49.2:8080/edit-javaee/items', {
+      $http.get('http://localhost:8080/edit-javaee/items', {
         cache: 'true'
       }).success(function (data) {
         defer.resolve({items: data});
@@ -31,7 +31,7 @@
 
     ItemsBase.getItem = function (id) {
       var defer = $q.defer();
-      $http.get('http://10.80.49.2:8080/edit-javaee/items/' + id, {
+      $http.get('http://localhost:8080/edit-javaee/items/' + id, {
         cache: 'true'
       }).success(function (data) {
         defer.resolve({item: data});
@@ -45,7 +45,7 @@
     init();
 
     function init() {
-      socket = $websocket('ws://10.80.49.2:8080/edit-javaee/angular');
+      socket = $websocket('ws://localhost:8080/edit-javaee/angular');
 
       socket.onMessage(function (msg) {
         console.log(msg);

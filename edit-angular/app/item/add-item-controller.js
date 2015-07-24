@@ -27,12 +27,12 @@
     });
 
     vm.addItem = function (title) {
-      $http.post('http://10.80.49.2:8080/edit-javaee/items/put', {title: title});
+      $http.post('http://localhost:8080/edit-javaee/items/put', {title: title});
       location.href = '/#/map';
     };
 
     vm.editItem = function (id, title) {
-      $http.post('http://10.80.49.2:8080/edit-javaee/items/edit', {id: id, title: title});
+      $http.post('http://localhost:8080/edit-javaee/items/edit', {id: id, title: title});
       location.reload();
     };
   }

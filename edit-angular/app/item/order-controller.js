@@ -23,7 +23,7 @@
     };
     vm.checkOut = function () {
       for (i = 0; i < Cart.items.length; i++) {
-        $http.post('http://10.80.49.2:8080/edit-javaee/items/get', {id: Cart.items[i].id});
+        $http.post('http://localhost:8080/edit-javaee/items/get', {id: Cart.items[i].id});
       }
       Cart.removeAllItems();
       location.href = '/#/map';
